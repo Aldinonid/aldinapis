@@ -1,23 +1,43 @@
-import { IsEmail, IsNotEmpty } from "class-validator"
-
-export class User {
-  constructor(
-    public username: string,
-    public profile_picture: string,
-    public student_name: string,
-    public student_number: number,
-    public profession: string,
-    public semester: number,
-    public ipk: number,
-    public favorite_major: string[],
-    public hobby: string[]
-  ) {}
+export type CreateUserParams = {
+  username: string
+  password: string
 }
 
-export class LoginUserDTO {
-  @IsEmail()
-  email: string
-
-  @IsNotEmpty()
+export type UpdateUserParams = {
+  username: string
   password: string
+}
+
+export type CreateUserProfileParams = {
+  firstName: string
+  lastName: string
+  age: number
+  dob: string
+}
+
+export type CreateUserPostParams = {
+  title: string
+  description: string
+}
+
+export class CreateUserDto {
+  username: string
+  password: string
+}
+
+export class UpdateUserDTO {
+  username: string
+  password: string
+}
+
+export class CreateUserProfileDTO {
+  firstName: string
+  lastName: string
+  age: number
+  dob: string
+}
+
+export class CreateUserPostDTO {
+  title: string
+  description: string
 }
