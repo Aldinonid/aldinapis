@@ -16,7 +16,10 @@ export class UsersService {
   ) {}
 
   findUsers() {
-    return this.userRepository.find({ relations: ['profile', 'posts'] })
+    return this.userRepository.find({ 
+      relations: ['profile', 'posts'], 
+      select: ['id', 'username', 'createdAt', 'profile', 'posts'] 
+    })
   }
 
   async createUser(userDetail: CreateUserParams) {

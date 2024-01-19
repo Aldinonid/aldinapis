@@ -1,3 +1,5 @@
+import { IsNotEmpty } from "class-validator"
+
 export type CreateUserParams = {
   username: string
   password: string
@@ -21,7 +23,11 @@ export type CreateUserPostParams = {
 }
 
 export class CreateUserDto {
+
+  @IsNotEmpty()
   username: string
+
+  @IsNotEmpty()
   password: string
 }
 
