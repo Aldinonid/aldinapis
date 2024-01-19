@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
+import { StaycationModule } from './staycation/staycation.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MhsModule } from './mhs/mhs.module';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseConfig } from './typeorm/typeorm.config';
+import { DatabaseConfig } from './config/typeorm.config';
 import { config } from './config/configuration';
+import { OtodyduckModule } from './otodyduck/otodyduck.module';
+import { RouterModule } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -16,8 +17,18 @@ import { config } from './config/configuration';
       isGlobal: true,
       load: [config]
     }),
-    MhsModule, 
-    UsersModule
+    RouterModule.register([
+      {
+        path: 'staycation',
+        module: StaycationModule,
+      },
+      {
+        path: 'otodyduck',
+        module: OtodyduckModule
+      }
+    ]),
+    StaycationModule,
+    OtodyduckModule
   ],
   controllers: [],
   providers: [],

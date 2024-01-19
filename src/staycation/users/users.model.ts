@@ -1,43 +1,43 @@
-export type CreateUserParams = {
+export type CreateStaycationUserParams = {
   username: string
   password: string
 }
 
-export type UpdateUserParams = {
+export type UpdateStaycationUserParams = {
   username: string
   password: string
 }
 
-export type CreateUserProfileParams = {
+export type CreateStaycationUserProfileParams = {
   firstName: string
   lastName: string
   age: number
   dob: string
 }
 
-export type CreateUserPostParams = {
+export type CreateStaycationUserPostParams = {
   title: string
   description: string
 }
 
-export class CreateUserDto {
+export class CreateStaycationUserDTO {
   username: string
   password: string
 }
 
-export class UpdateUserDTO {
+export class UpdateStaycationUserDTO {
   username: string
   password: string
 }
 
-export class CreateUserProfileDTO {
+export class CreateStaycationUserProfileDTO {
   firstName: string
   lastName: string
   age: number
   dob: string
 }
 
-export class CreateUserPostDTO {
+export class CreateStaycationUserPostDTO {
   title: string
   description: string
 }
