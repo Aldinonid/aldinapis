@@ -15,8 +15,12 @@ export type LoginOtodyduckUserParams = {
 }
 
 export type UpdateOtodyduckUserParams = {
-  username: string
-  password: string
+  name: string
+  email: string
+  password?: string
+  role: OtodyduckUserRole
+  job?: string
+  avatar?: string
 }
 
 export class CreateOtodyduckUserDTO {
@@ -27,6 +31,10 @@ export class CreateOtodyduckUserDTO {
 }
 
 export class UpdateOtodyduckUserDTO {
-  username: string
-  password: string
+  name: string
+  email: string
+  password?: string
+  role: OtodyduckUserRole
+  job?: string
+  avatar?: string
 }

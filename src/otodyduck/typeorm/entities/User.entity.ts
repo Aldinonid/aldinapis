@@ -1,11 +1,12 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { IsEmail, IsNotEmpty } from "class-validator";
+import { OtodyduckCourse } from "./Course.entity";
 
 export enum OtodyduckUserRole {
-  Teacher = 'teacher',
-  Student = 'student',
-  Admin = 'admin'
+  TEACHER = 'teacher',
+  STUDENT = 'student',
+  ADMIN = 'admin'
 }
 
 @Entity({ name: 'otodyduck_users' })
@@ -29,7 +30,7 @@ export class OtodyduckUser {
   @Column({
     type: 'enum',
     enum: OtodyduckUserRole,
-    default: OtodyduckUserRole.Student
+    default: OtodyduckUserRole.STUDENT
   })
   role: OtodyduckUserRole
 
@@ -39,10 +40,13 @@ export class OtodyduckUser {
   @Column()
   job: string
 
-  @Column({default: new Date()})
-  createdAt: Date
+  @OneToMany(() => OtodyduckCourse, (course) => course.id)
+  courseIds: OtodyduckCourse[]
 
-  @Column({nullable: true})
+  @CreateDateColumn({name: 'created_at'})
+  createdAt: Date
+  
+  @UpdateDateColumn({name: 'updated_at'})
   updatedAt: Date
 
   @BeforeInsert()
