@@ -5,16 +5,26 @@ import { Repository } from 'typeorm';
 import { ResponseMessage, Result } from 'src/utils/enums';
 import { RequestOtodyduckFlowDTO } from './flows.model';
 import { slugify } from 'src/utils/commons';
+import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
 
 @Injectable()
 export class FlowsService {
-  constructor(@InjectRepository(OtodyduckFlow) private flowRepository: Repository<OtodyduckFlow>) {}
+  constructor(
+    @InjectRepository(OtodyduckFlow) private flowRepository: Repository<OtodyduckFlow>,
+    @InjectRepository(OtodyduckCourse) private courseRepository: Repository<OtodyduckCourse>,
+  ) {}
 
   getAllFlows() {
     return new Result(ResponseMessage.SUCCESS, this.flowRepository.find())
   }
 
-  async getFlow(id: number) {
+  async getFlow(slug: string) {
+    const isNameExist = await this.flowRepository.findOne({ where: { slug: slug }})
+    if (isNameExist) throw new HttpException(ResponseMessage.FLOW_NOT_FOUND, HttpStatus.NOT_FOUND)
+
+    const courses = await this.courseRepository.find({
+      
+    })
     return new Result(ResponseMessage.SUCCESS, {})
   }
 
