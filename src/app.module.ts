@@ -6,6 +6,7 @@ import { DatabaseConfig } from './config/typeorm.config';
 import { config } from './config/configuration';
 import { OtodyduckModule } from './otodyduck/otodyduck.module';
 import { RouterModule } from '@nestjs/core';
+import { KatakanjiModule } from './katakanji/katakanji.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { RouterModule } from '@nestjs/core';
       }
     ]),
     StaycationModule,
-    OtodyduckModule
+    OtodyduckModule,
+    KatakanjiModule
   ],
   controllers: [],
   providers: [],
