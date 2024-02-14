@@ -8,6 +8,8 @@ export const config = () => ({
     password: process.env.PGPASSWORD,
     database: process.env.PGDATABASE,
     entities: [`dist/**/**/*.entity{.ts,.js}`],
-    synchronize: true
+    synchronize: true,
+    autoLoadEntities: true,
+    ssl: (process.env.SSL == 'true')
   }
 });
