@@ -21,17 +21,25 @@ import { ReviewsController } from './reviews/reviews.controller';
 import { OtodyduckChapter } from './typeorm/entities/Chapter.entity';
 import { OtodyduckReview } from './typeorm/entities/Review.entity';
 import { OtodyduckLesson } from './typeorm/entities/Lesson.entity';
+import { OtodyduckMyCourse } from './typeorm/entities/MyCourse.entity';
+import { LandingPageController } from './landing-page/landing-page.controller';
+import { LandingPageService } from './landing-page/landing-page.service';
+import { MyCoursesService } from './my-courses/my-courses.service';
+import { MyCoursesController } from './my-courses/my-courses.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([
-    OtodyduckUser, 
-    OtodyduckFlow, 
-    OtodyduckTool,
-    OtodyduckCourse,
-    OtodyduckChapter,
-    OtodyduckReview,
-    OtodyduckLesson
-  ])],
+  imports: [
+    TypeOrmModule.forFeature([
+      OtodyduckUser, 
+      OtodyduckFlow, 
+      OtodyduckTool,
+      OtodyduckCourse,
+      OtodyduckChapter,
+      OtodyduckReview,
+      OtodyduckLesson,
+      OtodyduckMyCourse
+    ])
+  ],
   controllers: [
     OtodyduckUsersController, 
     FlowsController, 
@@ -39,7 +47,9 @@ import { OtodyduckLesson } from './typeorm/entities/Lesson.entity';
     CoursesController, 
     ChaptersController, 
     LessonsController, 
-    ReviewsController
+    ReviewsController, 
+    LandingPageController, 
+    MyCoursesController
   ],
   providers: [
     OtodyduckUsersService, 
@@ -48,7 +58,9 @@ import { OtodyduckLesson } from './typeorm/entities/Lesson.entity';
     CoursesService, 
     ChaptersService, 
     LessonsService, 
-    ReviewsService
+    ReviewsService, 
+    LandingPageService, 
+    MyCoursesService
   ]
 })
 export class OtodyduckModule {}

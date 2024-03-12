@@ -7,6 +7,8 @@ export enum ResponseMessage {
   NAME_EXIST = 'Name already exists',
   FLOW_NOT_FOUND = 'Flow not found',
   TOOL_NOT_FOUND = 'Tool not found',
+  LESSON_NOT_FOUND = 'Lesson not found',
+  CHAPTER_NOT_FOUND = 'Chapter not found',
   COURSE_NOT_FOUND = 'Course not found',
   COURSE_NOT_HAVE_PRICE = 'Premium course should have price',
 
@@ -24,15 +26,18 @@ export enum OtodyduckLevel {
 export class Result<T> {
   private readonly status: ResponseMessage
   private readonly data: T
+  private readonly token?: string
   
-  constructor(status: ResponseMessage, data: T) {
+  constructor(status: ResponseMessage, data: T, token?: string) {
     this.status = status
     this.data = data
+    this.token = token
   }
 
-  public post() {
+  public userLoginResponse() {
     return {
       status: this.status,
+      token: this.token,
       data: this.data
     }
   }

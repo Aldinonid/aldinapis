@@ -20,12 +20,12 @@ export type ListCourseQueries = {
   q: string
   status: string
   category: string
-  mentorId: string
+  mentor_id: string
 }
 
 export class RequestOtodyduckCourseDTO {
   name: string
-  hasCertificate: boolean
+  certificate: boolean
   thumbnail: string
   type: CourseType
   status: CourseStatus
@@ -33,5 +33,6 @@ export class RequestOtodyduckCourseDTO {
   level: OtodyduckLevel
   description: string
   category: CourseCategory
+  mentor_id: number
   tool_ids: number[]
 }

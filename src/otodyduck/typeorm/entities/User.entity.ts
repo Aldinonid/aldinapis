@@ -18,7 +18,7 @@ export class OtodyduckUser {
   @IsNotEmpty()
   name: string;
 
-  @Column()
+  @Column({ select: false })
   @IsNotEmpty()
   password: string;
 
@@ -40,8 +40,11 @@ export class OtodyduckUser {
   @Column()
   job: string
 
+  // @Column()
+  // token: string
+
   @OneToMany(() => OtodyduckCourse, (course) => course.id)
-  courseIds: OtodyduckCourse[]
+  courses: OtodyduckCourse[]
 
   @CreateDateColumn({name: 'created_at'})
   createdAt: Date

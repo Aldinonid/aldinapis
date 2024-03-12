@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { IsNotEmpty } from "class-validator";
 import { OtodyduckLevel } from "src/utils/enums";
 import { OtodyduckCourse } from "./Course.entity";
@@ -26,9 +26,8 @@ export class OtodyduckFlow {
   @IsNotEmpty()
   level: OtodyduckLevel
 
-  @ManyToMany(() => OtodyduckCourse)
-  @JoinTable()
-  course: OtodyduckCourse[]
+  @ManyToMany(() => OtodyduckCourse, course => course.flows)
+  courses: OtodyduckCourse[]
 
   @CreateDateColumn({name: 'created_at'})
   createdAt: Date

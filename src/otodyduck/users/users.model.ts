@@ -38,3 +38,19 @@ export class UpdateOtodyduckUserDTO {
   job?: string
   avatar?: string
 }
+
+export class OtodyduckUserData {
+  id: number
+  name: string
+  email: string
+  role: string
+  avatar: string
+  createdAt: string
+  updatedAt: string
+  iat: number
+  exp: number
+}
+
+export class OtodyduckUserRequest {
+  user: OtodyduckUserData
+}

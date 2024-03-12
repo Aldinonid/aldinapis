@@ -1,12 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CourseType, ListCourseQueries, RequestOtodyduckCourseDTO } from './courses.model';
 import { ResponseMessage, Result } from 'src/utils/enums';
 import { OtodyduckReview } from '../typeorm/entities/Review.entity';
 import { OtodyduckTool } from '../typeorm/entities/Tool.entity';
 import { slugify } from 'src/utils/commons';
+import { OtodyduckUser } from '../typeorm/entities/User.entity';
 
 @Injectable()
 export class CoursesService {
@@ -14,33 +15,36 @@ export class CoursesService {
     @InjectRepository(OtodyduckCourse) private courseRepository: Repository<OtodyduckCourse>,
     @InjectRepository(OtodyduckReview) private reviewRepository: Repository<OtodyduckReview>,
     @InjectRepository(OtodyduckTool) private toolRepository: Repository<OtodyduckTool>,
+    @InjectRepository(OtodyduckUser) private userRepository: Repository<OtodyduckUser>,
   ) {}
 
   async getAllCourses(query?: ListCourseQueries) {
-    let courses = this.courseRepository.createQueryBuilder()
+    let courses = this.courseRepository.createQueryBuilder('otodyduck_courses')
 
     if (query?.q) {
-      courses.where('name LIKE :name', {name: `%${query.q}%`}).getMany()
+      courses.where('otodyduck_courses.name LIKE :name', {name: `%${query.q}%`})
     }
     if (query?.status) {
-      courses.where('status = :status', {status: query.status}).getMany()
+      courses.where('otodyduck_courses.status = :status', {status: query.status})
     }
-    if (query?.mentorId) {
-      courses.where('mentorId = :mentorId', {mentorId: query.mentorId}).getMany()
+    if (query?.mentor_id) {
+      courses.where('otodyduck_courses.user = :user', {user: query.mentor_id})
     }
     if (query?.category) {
-      courses.where('category = :category', {category: query.category}).getMany()
+      courses.where('otodyduck_courses.category = :category', {category: query.category})
     }
 
-    console.log(courses);
+    const courseResult = await courses
+      .leftJoinAndSelect('otodyduck_courses.user', 'otodyduck_users')
+      .getMany()
 
-    return new Result(ResponseMessage.SUCCESS, courses)
+    return new Result(ResponseMessage.SUCCESS, courseResult)
   }
 
   async getCourse(id: number) {
     const course = await this.courseRepository.findOne({ 
       where: { id: id }, 
-      relations: { review: true, tools: true, userId: true } 
+      relations: { review: true, tools: true, user: true } 
     })
     if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
 
@@ -51,13 +55,20 @@ export class CoursesService {
     const isNameExist = await this.courseRepository.findOne({ where: { name: request.name }})
     if (isNameExist) throw new HttpException(ResponseMessage.NAME_EXIST, HttpStatus.CONFLICT)
 
+    const mentor = await this.userRepository.findOne({ where: { id: request.mentor_id } })
+    if (!mentor) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+
     const course = this.courseRepository.create(request)
     if (request.price === 0 && request.type === CourseType.PREMIUM) throw new HttpException(
       ResponseMessage.COURSE_NOT_HAVE_PRICE, 
       HttpStatus.BAD_REQUEST
     )
 
+    const tools = await this.toolRepository.findBy({ id: In(request.tool_ids) })
+
     course.slug = slugify(request.name)
+    course.user = mentor
+    course.tools = tools
 
     const createdCourse = await this.courseRepository.save(course)
 
@@ -65,10 +76,32 @@ export class CoursesService {
   }
 
   async updateCourse(id: number, request: RequestOtodyduckCourseDTO) {
+    const { tool_ids, mentor_id, ...courseRequest} = request
+    const course = await this.courseRepository.findOne({ where: { id } })
+    if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    
+    const mentor = await this.userRepository.findOne({ where: { id: mentor_id } })
+    if (!mentor) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
 
+    const tools = await this.toolRepository.findBy({ id: In(tool_ids) })
+
+    course.updatedAt = new Date()
+    course.slug = slugify(courseRequest.name)
+    course.user = mentor
+    course.tools = tools
+
+    Object.assign(course, courseRequest)
+
+    const updatedCourse = await this.courseRepository.save(course)
+    return new Result(ResponseMessage.SUCCESS, updatedCourse)
   }
 
   async deleteCourse(id: number) {
+    const course = await this.courseRepository.findOne({ where: { id } })
+    if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
 
+    await this.courseRepository.delete({ id })
+
+    return new Result(ResponseMessage.SUCCESS, ResponseMessage.DELETE_SUCCESS)
   }
 }

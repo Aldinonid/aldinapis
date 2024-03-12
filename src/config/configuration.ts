@@ -7,9 +7,12 @@ export const config = () => ({
     username: process.env.PGUSER,
     password: process.env.PGPASSWORD,
     database: process.env.PGDATABASE,
-    entities: [`dist/**/**/*.entity{.ts,.js}`],
     synchronize: true,
     autoLoadEntities: true,
-    ssl: (process.env.SSL == 'true')
-  }
+    ssl: (process.env.SSL == 'true'),
+    entities: [`dist/**/**/*.entity{.ts,.js}`],
+    migrations: [`dist/**/migration/*.{.ts,.js}`],
+    migrationsTableName: `${process.env.PGDATABASE}_migrations`
+  },
+  secretKey: `${process.env.SECRET_KEY}`
 });

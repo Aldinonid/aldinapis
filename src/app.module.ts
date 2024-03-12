@@ -7,6 +7,7 @@ import { config } from './config/configuration';
 import { OtodyduckModule } from './otodyduck/otodyduck.module';
 import { RouterModule } from '@nestjs/core';
 import { KatakanjiModule } from './katakanji/katakanji.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -17,6 +18,11 @@ import { KatakanjiModule } from './katakanji/katakanji.module';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config]
+    }),
+    JwtModule.register({
+      global: true,
+      secret: config().secretKey,
+      signOptions: { expiresIn: '1h' }
     }),
     RouterModule.register([
       {

@@ -1,19 +1,21 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
-import { CreateOtodyduckUserParams, LoginOtodyduckUserParams, UpdateOtodyduckUserParams } from './users.model';
+import { CreateOtodyduckUserParams, LoginOtodyduckUserParams, OtodyduckUserData, UpdateOtodyduckUserParams } from './users.model';
 import { OtodyduckUser } from '../typeorm/entities/User.entity';
 import * as bcrypt from 'bcrypt';
 import { ResponseMessage, Result } from 'src/utils/enums';
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class OtodyduckUsersService {
   constructor(
     @InjectRepository(OtodyduckUser) private userRepository: Repository<OtodyduckUser>,
+    private jwtService: JwtService
   ) {}
 
   async findAllUsers() {
-    const users = await this.userRepository.find({select: ['id', 'avatar', 'name', 'avatar', 'role', 'job', 'createdAt', 'updatedAt']})
+    const users = await this.userRepository.find()
 
     return new Result(ResponseMessage.SUCCESS, users)
   }
@@ -22,53 +24,66 @@ export class OtodyduckUsersService {
     const user = await this.userRepository.findOneBy({ id })
     if (!user) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
 
-    return new Result(
-      ResponseMessage.SUCCESS, 
-      {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
-      }
-    )
+    return new Result(ResponseMessage.SUCCESS, user)
+  }
+
+  async fetchUser(data: OtodyduckUserData) {
+    const user = await this.userRepository.findOneBy({ id: data.id })
+    if (!user) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+
+    return new Result(ResponseMessage.SUCCESS, user)
   }
 
   async register(request: CreateOtodyduckUserParams) {
     const newUser = this.userRepository.create(request)
     const isEmailExist = await this.userRepository.findOne({where: { email: request.email }})
     if (isEmailExist) throw new HttpException(ResponseMessage.EMAIL_EXIST, HttpStatus.CONFLICT)
+    newUser.password = await bcrypt.hash(request.password, 10)
     const createdUser = await this.userRepository.save(newUser)
 
     return new Result(ResponseMessage.SUCCESS, {id: createdUser.id})
   }
 
   async login(request: LoginOtodyduckUserParams) {
-    const user = await this.userRepository.findOne({where: {email: request.email}})
-    if (!user) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    const user = await this.userRepository
+      .createQueryBuilder('otodyduck_users')
+      .where('otodyduck_users.email = :email', { email: request.email })
+      .addSelect('otodyduck_users.password')
+      .getOne()
 
+    if (!user) throw new UnauthorizedException()
+    
     const isPasswordValid = await bcrypt.compare(request.password, user.password)
-    if (!isPasswordValid) throw new HttpException(ResponseMessage.INVALID_PASSWORD, HttpStatus.UNAUTHORIZED)
+    if (!isPasswordValid) throw new UnauthorizedException()
+
+    const userData = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    }
+
+    const token = await this.jwtService.signAsync(userData)
+
+    // await this.userRepository.update(user.id, {token: token})
 
     return new Result(
-      ResponseMessage.SUCCESS,
-      {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
-      }
-    )
+      ResponseMessage.SUCCESS, 
+      userData, 
+      token
+    ).userLoginResponse()
   }
 
-  async logout(id: number) {
-    const user = await this.userRepository.findOneBy({ id })
+  async logout(data: OtodyduckUserData) {
+    const user = await this.userRepository.findOneBy({ id: data.id })
     if (!user) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+
+    console.log(data)
+
+    // await this.userRepository.update(user.id, { token: '' })
 
     return new Result(ResponseMessage.SUCCESS, ResponseMessage.LOGOUT_SUCCESS)
   }
@@ -91,18 +106,7 @@ export class OtodyduckUsersService {
 
     await this.userRepository.save(user)
 
-    return new Result(
-      ResponseMessage.SUCCESS, 
-      {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
-      }
-    )
+    return new Result(ResponseMessage.SUCCESS, user)
   }
 
   async deleteUser(id: number) {

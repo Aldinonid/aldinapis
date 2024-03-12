@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { OtodyduckUsersService } from './users.service';
-import { CreateOtodyduckUserDTO, LoginOtodyduckUserParams, UpdateOtodyduckUserDTO } from './users.model';
+import { CreateOtodyduckUserDTO, LoginOtodyduckUserParams, OtodyduckUserRequest, UpdateOtodyduckUserDTO } from './users.model';
+import { AuthGuard } from '../../auth/auth.guard';
 
 @Controller('users')
 export class OtodyduckUsersController {
@@ -27,9 +28,10 @@ export class OtodyduckUsersController {
     return this.userService.login(createUserDto)
   }
 
+  @UseGuards(AuthGuard)
   @Post('/logout')
-  logout(@Body('id', ParseIntPipe) id: number) {
-    return this.userService.logout(id)
+  logout(@Request() req: OtodyduckUserRequest) {
+    return this.userService.logout(req.user)
   }
 
   @Put(':id')

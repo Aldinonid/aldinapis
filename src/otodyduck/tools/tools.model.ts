@@ -3,3 +3,7 @@ export class RequestOtodyduckToolDTO {
   url: string
   image: string
 }
+
+export type ListToolQueries = {
+  course_id: string
+}
