@@ -44,11 +44,11 @@ export class OtodyduckUserData {
   name: string
   email: string
   role: string
+  job: string
   avatar: string
   createdAt: string
   updatedAt: string
-  iat: number
-  exp: number
+  refreshToken: string
 }
 
 export class OtodyduckUserRequest {

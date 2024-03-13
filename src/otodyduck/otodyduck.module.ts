@@ -26,6 +26,11 @@ import { LandingPageController } from './landing-page/landing-page.controller';
 import { LandingPageService } from './landing-page/landing-page.service';
 import { MyCoursesService } from './my-courses/my-courses.service';
 import { MyCoursesController } from './my-courses/my-courses.controller';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
+import { LocalStrategy } from './auth/strategies/local-strategy';
+import { JwtStrategy } from './auth/strategies/jwt-strategy';
+import { RefreshJwtStrategy } from './auth/strategies/refreshToken.strategy';
 
 @Module({
   imports: [
@@ -49,7 +54,8 @@ import { MyCoursesController } from './my-courses/my-courses.controller';
     LessonsController, 
     ReviewsController, 
     LandingPageController, 
-    MyCoursesController
+    MyCoursesController, 
+    AuthController
   ],
   providers: [
     OtodyduckUsersService, 
@@ -60,7 +66,11 @@ import { MyCoursesController } from './my-courses/my-courses.controller';
     LessonsService, 
     ReviewsService, 
     LandingPageService, 
-    MyCoursesService
+    MyCoursesService,
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshJwtStrategy
   ]
 })
 export class OtodyduckModule {}
