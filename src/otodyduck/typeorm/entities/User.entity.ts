@@ -40,8 +40,8 @@ export class OtodyduckUser {
   @Column()
   job: string
 
-  // @Column()
-  // token: string
+  @Column({nullable: true})
+  refreshToken: string
 
   @OneToMany(() => OtodyduckCourse, (course) => course.id)
   courses: OtodyduckCourse[]
