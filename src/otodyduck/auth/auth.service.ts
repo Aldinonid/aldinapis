@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { OtodyduckUser } from '../typeorm/entities/User.entity';
 import { OtodyduckUserData } from '../users/users.model';
 import { ResponseMessage, Result } from 'src/utils/enums';
-import { AuthJwtTokenData } from './auth..model';
+import { AuthJwtTokenData } from './auth.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -18,7 +18,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.userService.findUserByEmail(email);
+    const user = await this.userService.findUserByEmail(email)
     if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user
       return result
@@ -26,23 +26,23 @@ export class AuthService {
     return null
   }
 
-  async validateToken(token: string, email: string) {
+  async validateUserToken(token: string, email: string, isRefresh: boolean = false) {
     const user = await this.userService.findUserByEmail(email)
-    if (user && user.accessToken === token) {
-      const { password, ...result } = user
+    if (user && isRefresh ? user.refreshToken === token : user.accessToken === token) {
+      const {
+        password, 
+        refreshToken, 
+        accessToken, 
+        ...result
+      } = user
       return result
     }
     return null
   }
 
-  async validateRefreshToken(token: string, email: string) {
-    const user = await this.userService.findUserByEmail(email)
-    if (user && user.refreshToken === token) {
-      const { password, ...result } = user
-      return result
-    }
-    return null
-  }
+  expiredTokenCheck = async (expDate: number) => (new Date(expDate * 1000) < new Date()) 
+    ? new Result(ResponseMessage.FAILED, ResponseMessage.TOKEN_EXPIRED) 
+    : null
 
   async login(user: OtodyduckUserData) {
     const payload: AuthJwtTokenData = {
@@ -58,11 +58,11 @@ export class AuthService {
     }
 
     const accessToken = this.jwtService.sign(payload)
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '1d' })
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' })
 
     await this.userRepository.update(user.id, {
-      refreshToken: refreshToken,
-      accessToken: accessToken
+      accessToken: accessToken,
+      refreshToken: refreshToken
     })
 
     const result = {
@@ -100,17 +100,9 @@ export class AuthService {
     }
 
     const accessToken = this.jwtService.sign(payload)
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '1d' })
+    await this.userRepository.update(user.id, { accessToken: accessToken })
 
-    await this.userRepository.update(user.id, {
-      refreshToken: refreshToken,
-      accessToken: accessToken
-    })
-
-    return {
-      accessToken: accessToken,
-      refreshToken: refreshToken
-    };
+    return { accessToken: accessToken }
   }
   
 }

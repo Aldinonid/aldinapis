@@ -7,7 +7,9 @@ export type AuthJwtTokenData = {
     role: string;
     job: string;
     avatar: string;
-  };
+  },
+  iat?: number,
+  exp?: number
 }
 
 export type AuthRequestData = {

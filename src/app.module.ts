@@ -22,7 +22,7 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       global: true,
       secret: config().secretKey,
-      signOptions: { expiresIn: '1h' }
+      signOptions: { expiresIn: '20m' }
     }),
     RouterModule.register([
       {

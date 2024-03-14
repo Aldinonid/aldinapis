@@ -25,11 +25,21 @@ export class OtodyduckUsersService {
     return new Result(ResponseMessage.SUCCESS, user)
   }
 
+  async getUserId(id: number): Promise<OtodyduckUser> {
+    const user = await this.userRepository.findOneBy({ id })
+    if (!user) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    return user
+  }
+
   async findUserByEmail(email: string) {
     const user = await this.userRepository
       .createQueryBuilder('otodyduck_users')
       .where('otodyduck_users.email = :email', { email: email })
-      .addSelect('otodyduck_users.password')
+      .addSelect([
+        'otodyduck_users.password',
+        'otodyduck_users.refreshToken',
+        'otodyduck_users.accessToken'
+      ])
       .getOne()
     if (!user) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
 

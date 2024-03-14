@@ -42,13 +42,15 @@ export class OtodyduckUser {
 
   @Column({
     name: 'refresh_token',
-    nullable: true
+    nullable: true,
+    select: false
   })
   refreshToken: string
 
   @Column({
     name: 'access_token',
-    nullable: true
+    nullable: true,
+    select: false
   })
   accessToken: string
 

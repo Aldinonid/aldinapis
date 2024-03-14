@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { OtodyduckUsersService } from '../users/users.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -25,7 +25,7 @@ export class AuthController {
   }
 
   @UseGuards(RefreshJwtGuard)
-  @Post('refresh-token')
+  @Get('refresh-token')
   async refreshToken(@Request() req: OtodyduckUserRequest) {
     return this.authService.refreshToken(req.user)
   }

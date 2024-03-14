@@ -11,6 +11,7 @@ export enum ResponseMessage {
   CHAPTER_NOT_FOUND = 'Chapter not found',
   COURSE_NOT_FOUND = 'Course not found',
   COURSE_NOT_HAVE_PRICE = 'Premium course should have price',
+  TOKEN_EXPIRED = 'Token expired',
 
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED'
