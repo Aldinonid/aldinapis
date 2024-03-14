@@ -1,23 +1,26 @@
-import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { MyCoursesService } from './my-courses.service';
 import { RequestOtodyduckMyCourseDTO } from './my-courses.model';
+import { JwtGuard } from '../auth/guards/jwt-auth.guard';
+import { OtodyduckUserRequest } from '../users/users.model';
 
 @Controller('my-courses')
 export class MyCoursesController {
   constructor(private readonly myCourseService: MyCoursesService) {}
 
+  @UseGuards(JwtGuard)
   @Get()
-  getMyCourse() {
-    return this.myCourseService.getMyCourse()
+  getMyCourse(@Request() req: OtodyduckUserRequest) {
+    return this.myCourseService.getMyCourse(req.user)
   }
 
+  @UseGuards(JwtGuard)
   @Post()
   enrollCourse(
-    @Headers('token') token: string,
-    @Body() request: RequestOtodyduckMyCourseDTO
+    @Body() request: RequestOtodyduckMyCourseDTO,
+    @Request() req: OtodyduckUserRequest
   ) {
-    console.log(token)
-    return this.myCourseService.enroll(request)
+    return this.myCourseService.enroll(request, req.user)
   }
   
 }

@@ -1,3 +1,3 @@
 export class RequestOtodyduckMyCourseDTO {
-  course_id: string
+  course_id: number
 }

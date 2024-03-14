@@ -1,4 +1,4 @@
-import { CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { OtodyduckCourse } from "./Course.entity";
 import { OtodyduckUser } from "./User.entity";
 
@@ -7,13 +7,13 @@ export class OtodyduckMyCourse {
   @PrimaryGeneratedColumn()
   id: number
 
-  @OneToOne(() => OtodyduckCourse)
+  @ManyToOne(() => OtodyduckCourse)
   @JoinColumn({name: 'course_id'})
-  courseId: OtodyduckCourse
+  course: OtodyduckCourse
 
-  @OneToOne(() => OtodyduckUser)
+  @ManyToOne(() => OtodyduckUser)
   @JoinColumn({name: 'user_id'})
-  userId: OtodyduckUser
+  user: OtodyduckUser
 
   @CreateDateColumn({name: 'created_at'})
   createdAt: Date

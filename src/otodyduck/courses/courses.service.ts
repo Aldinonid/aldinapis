@@ -51,6 +51,12 @@ export class CoursesService {
     return new Result(ResponseMessage.SUCCESS, course)
   }
 
+  async getCourseById(id: number): Promise<OtodyduckCourse> {
+    const course = await this.courseRepository.findOneBy({ id })
+    if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    return course
+  }
+
   async createCourse(request: RequestOtodyduckCourseDTO) {
     const isNameExist = await this.courseRepository.findOne({ where: { name: request.name }})
     if (isNameExist) throw new HttpException(ResponseMessage.NAME_EXIST, HttpStatus.CONFLICT)
