@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { StaycationUsersController } from './users/users.controller';
-import { StaycationUsersService } from './users/users.service';
+import { StaycationUserController } from './users/users.controller';
+import { StaycationUserService } from './users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StaycationUser } from 'src/staycation/typeorm/entities/User.entity';
 import { LandingPageController } from './landing-page/landing-page.controller';
@@ -35,7 +35,7 @@ import { ImageController } from './image/image.controller';
     StaycationImage
   ])],
   providers: [
-    StaycationUsersService, 
+    StaycationUserService, 
     LandingPageService, 
     BankService, 
     ActivityService, 
@@ -44,7 +44,7 @@ import { ImageController } from './image/image.controller';
     ItemService, ImageService
   ],
   controllers: [
-    StaycationUsersController, 
+    StaycationUserController, 
     LandingPageController, 
     BankController, 
     ActivityController, 

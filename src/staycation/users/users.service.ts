@@ -5,7 +5,7 @@ import { CreateStaycationUserParams, UpdateStaycationUserParams } from './users.
 import { StaycationUser } from 'src/staycation/typeorm/entities/User.entity';
 
 @Injectable()
-export class StaycationUsersService {
+export class StaycationUserService {
   constructor(
     @InjectRepository(StaycationUser) private userRepository: Repository<StaycationUser>,
   ) {}
