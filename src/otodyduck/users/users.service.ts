@@ -62,8 +62,8 @@ export class OtodyduckUsersService {
     return new Result(Message.SUCCESS, createdUser)
   }
 
-  async updateUser(id: number, request: UpdateOtodyduckUserParams) {
-    const user = await this.userRepository.findOneBy({ id })
+  async updateUser(data: OtodyduckUserData, request: UpdateOtodyduckUserParams) {
+    const user = await this.userRepository.findOneBy({ id: data.id })
     if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
 
     const isEmailExist = await this.userRepository.findOne({

@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Put, Request, UseGuards } from '@nestjs/common';
 import { OtodyduckUsersService } from './users.service';
-import { UpdateOtodyduckUserDTO } from './users.model';
+import { OtodyduckUserRequest, UpdateOtodyduckUserDTO } from './users.model';
+import { JwtGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class OtodyduckUsersController {
@@ -16,12 +17,13 @@ export class OtodyduckUsersController {
     return this.userService.findUser(id)
   }
 
-  @Put(':id')
+  @UseGuards(JwtGuard)
+  @Put()
   updateUserById(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateOtodyduckUserDTO
+    @Body() updateUserDto: UpdateOtodyduckUserDTO,
+    @Request() req: OtodyduckUserRequest
   ) {
-    return this.userService.updateUser(id, updateUserDto)
+    return this.userService.updateUser(req.user, updateUserDto)
   }
 
   @Delete(':id')
@@ -30,3 +32,4 @@ export class OtodyduckUsersController {
     return this.userService.deleteUser(id)
   }
 }
+
