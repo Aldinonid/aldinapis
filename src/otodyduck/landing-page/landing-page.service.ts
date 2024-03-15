@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { Message, Result } from 'src/utils/enums';
 
 @Injectable()
-export class LandingPageService {
+export class FrontPageService {
   constructor(
     @InjectRepository(OtodyduckCourse) private courseRepository: Repository<OtodyduckCourse>,
     @InjectRepository(OtodyduckUser) private userRepository: Repository<OtodyduckUser>,

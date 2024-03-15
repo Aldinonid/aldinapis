@@ -3,12 +3,12 @@ import { OtodyduckFlow } from '../typeorm/entities/Flow.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message, Result } from 'src/utils/enums';
-import { RequestOtodyduckFlowDTO } from './flows.model';
+import { RequestOtodyduckFlowDTO } from './flow.model';
 import { slugify } from 'src/utils/commons';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
 
 @Injectable()
-export class FlowsService {
+export class FlowService {
   constructor(
     @InjectRepository(OtodyduckFlow) private flowRepository: Repository<OtodyduckFlow>,
     @InjectRepository(OtodyduckCourse) private courseRepository: Repository<OtodyduckCourse>,

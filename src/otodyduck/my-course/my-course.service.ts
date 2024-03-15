@@ -2,18 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckMyCourse } from '../typeorm/entities/MyCourse.entity';
 import { Repository } from 'typeorm';
-import { RequestOtodyduckMyCourseDTO } from './my-courses.model';
+import { RequestOtodyduckMyCourseDTO } from './my-course.model';
 import { Message, Result } from 'src/utils/enums';
-import { OtodyduckUserData } from '../users/users.model';
-import { OtodyduckUsersService } from '../users/users.service';
-import { CoursesService } from '../courses/courses.service';
+import { OtodyduckUserData } from '../user/user.model';
+import { OtodyduckUserService } from '../user/user.service';
+import { CourseService } from '../course/course.service';
 
 @Injectable()
-export class MyCoursesService {
+export class MyCourseService {
   constructor(
     @InjectRepository(OtodyduckMyCourse) private myCourseRepository: Repository<OtodyduckMyCourse>,
-    private readonly courseService: CoursesService,
-    private readonly userService: OtodyduckUsersService
+    private readonly courseService: CourseService,
+    private readonly userService: OtodyduckUserService
   ) {}
 
   async getMyCourse(data: OtodyduckUserData) {

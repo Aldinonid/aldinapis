@@ -2,12 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckLesson } from '../typeorm/entities/Lesson.entity';
 import { Repository } from 'typeorm';
-import { RequestOtodyduckLessonDTO } from './lessons.model';
+import { RequestOtodyduckLessonDTO } from './lesson.model';
 import { Message, Result } from 'src/utils/enums';
 import { OtodyduckChapter } from '../typeorm/entities/Chapter.entity';
 
 @Injectable()
-export class LessonsService {
+export class LessonService {
   constructor(
     @InjectRepository(OtodyduckLesson) private lessonRepository: Repository<OtodyduckLesson>,
     @InjectRepository(OtodyduckChapter) private chapterRepository: Repository<OtodyduckChapter>

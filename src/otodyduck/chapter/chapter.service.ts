@@ -4,10 +4,10 @@ import { OtodyduckChapter } from '../typeorm/entities/Chapter.entity';
 import { Repository } from 'typeorm';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
 import { Message, Result } from 'src/utils/enums';
-import { RequestOtodyduckChapterDTO } from './chapters.model';
+import { RequestOtodyduckChapterDTO } from './chapter.model';
 
 @Injectable()
-export class ChaptersService {
+export class ChapterService {
   constructor(
     @InjectRepository(OtodyduckChapter) private chapterRepository: Repository<OtodyduckChapter>,
     @InjectRepository(OtodyduckCourse) private courseRepository: Repository<OtodyduckCourse>,

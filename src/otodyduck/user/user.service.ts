@@ -1,13 +1,13 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
-import { CreateOtodyduckUserParams, OtodyduckUserData, UpdateOtodyduckUserParams } from './users.model';
+import { CreateOtodyduckUserParams, OtodyduckUserData, UpdateOtodyduckUserParams } from './user.model';
 import { OtodyduckUser } from '../typeorm/entities/User.entity';
 import * as bcrypt from 'bcrypt';
 import { Message, Result } from 'src/utils/enums';
 
 @Injectable()
-export class OtodyduckUsersService {
+export class OtodyduckUserService {
   constructor(
     @InjectRepository(OtodyduckUser) private userRepository: Repository<OtodyduckUser>
   ) {}

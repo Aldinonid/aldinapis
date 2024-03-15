@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
-import { MyCoursesService } from './my-courses.service';
-import { RequestOtodyduckMyCourseDTO } from './my-courses.model';
+import { MyCourseService } from './my-course.service';
+import { RequestOtodyduckMyCourseDTO } from './my-course.model';
 import { JwtGuard } from '../auth/guards/jwt-auth.guard';
-import { OtodyduckUserRequest } from '../users/users.model';
+import { OtodyduckUserRequest } from '../user/user.model';
 
-@Controller('my-courses')
-export class MyCoursesController {
-  constructor(private readonly myCourseService: MyCoursesService) {}
+@Controller('my-course')
+export class MyCourseController {
+  constructor(private readonly myCourseService: MyCourseService) {}
 
   @UseGuards(JwtGuard)
   @Get()

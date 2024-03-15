@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckTool } from '../typeorm/entities/Tool.entity';
 import { Repository } from 'typeorm';
 import { Message, Result } from 'src/utils/enums';
-import { ListToolQueries, RequestOtodyduckToolDTO } from './tools.model';
+import { ListToolQueries, RequestOtodyduckToolDTO } from './tool.model';
 
 @Injectable()
-export class ToolsService {
+export class ToolService {
   constructor(@InjectRepository(OtodyduckTool) private toolRepository: Repository<OtodyduckTool>) {}
 
   async getAllTools(query: ListToolQueries) {

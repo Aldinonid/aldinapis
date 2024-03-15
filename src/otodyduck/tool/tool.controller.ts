@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
-import { ToolsService } from './tools.service';
-import { ListToolQueries, RequestOtodyduckToolDTO } from './tools.model';
+import { ToolService } from './tool.service';
+import { ListToolQueries, RequestOtodyduckToolDTO } from './tool.model';
 
-@Controller('tools')
-export class ToolsController {
-  constructor(private readonly toolService: ToolsService) {}
+@Controller('tool')
+export class ToolController {
+  constructor(private readonly toolService: ToolService) {}
 
   @Get()
   getAllTools(@Query() query: ListToolQueries) {

@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { LessonsService } from './lessons.service';
-import { RequestOtodyduckLessonDTO } from './lessons.model';
+import { LessonService } from './lesson.service';
+import { RequestOtodyduckLessonDTO } from './lesson.model';
 
-@Controller('lessons')
+@Controller('lesson')
 export class LessonsController {
-  constructor(private readonly lessonService: LessonsService) {}
+  constructor(private readonly lessonService: LessonService) {}
 
   @Get()
   getAllLessons() {

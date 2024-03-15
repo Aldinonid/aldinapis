@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { OtodyduckUsersService } from '../users/users.service';
+import { OtodyduckUserService } from '../user/user.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { CreateOtodyduckUserDTO, OtodyduckUserRequest } from '../users/users.model';
+import { CreateOtodyduckUserDTO, OtodyduckUserRequest } from '../user/user.model';
 import { RefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
 import { JwtGuard } from './guards/jwt-auth.guard';
 
@@ -10,7 +10,7 @@ import { JwtGuard } from './guards/jwt-auth.guard';
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private userService: OtodyduckUsersService,
+    private userService: OtodyduckUserService,
   ) {}
 
   @UseGuards(LocalAuthGuard)

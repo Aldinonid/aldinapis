@@ -1,11 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
-import { LandingPageService } from './landing-page.service';
+import { FrontPageService } from './landing-page.service';
 
-@Controller('landing-page')
-export class LandingPageController {
-  constructor(private readonly courseService: LandingPageService) {}
+@Controller()
+export class FrontPageController {
+  constructor(private readonly courseService: FrontPageService) {}
 
-  @Get()
+  @Get('landing-page')
   getAllCourses() {
     return this.courseService.getData()
   }

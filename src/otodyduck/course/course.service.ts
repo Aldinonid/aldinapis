@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
 import { In, Repository } from 'typeorm';
-import { CourseType, ListCourseQueries, RequestOtodyduckCourseDTO } from './courses.model';
+import { CourseType, ListCourseQueries, RequestOtodyduckCourseDTO } from './course.model';
 import { Message, Result } from 'src/utils/enums';
 import { OtodyduckReview } from '../typeorm/entities/Review.entity';
 import { OtodyduckTool } from '../typeorm/entities/Tool.entity';
@@ -10,7 +10,7 @@ import { slugify } from 'src/utils/commons';
 import { OtodyduckUser } from '../typeorm/entities/User.entity';
 
 @Injectable()
-export class CoursesService {
+export class CourseService {
   constructor(
     @InjectRepository(OtodyduckCourse) private courseRepository: Repository<OtodyduckCourse>,
     @InjectRepository(OtodyduckReview) private reviewRepository: Repository<OtodyduckReview>,

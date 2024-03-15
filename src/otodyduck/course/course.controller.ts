@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
-import { CoursesService } from './courses.service';
-import { ListCourseQueries, RequestOtodyduckCourseDTO } from './courses.model';
+import { CourseService } from './course.service';
+import { ListCourseQueries, RequestOtodyduckCourseDTO } from './course.model';
 
-@Controller('courses')
-export class CoursesController {
-  constructor(private readonly courseService: CoursesService) {}
+@Controller('course')
+export class CourseController {
+  constructor(private readonly courseService: CourseService) {}
 
   @Get()
   getAllCourses(@Query() query: ListCourseQueries) {

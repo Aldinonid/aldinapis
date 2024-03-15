@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { ChaptersService } from './chapters.service';
-import { RequestOtodyduckChapterDTO } from './chapters.model';
+import { ChapterService } from './chapter.service';
+import { RequestOtodyduckChapterDTO } from './chapter.model';
 
-@Controller('chapters')
-export class ChaptersController {
-  constructor(private readonly chapterService: ChaptersService) {}
+@Controller('chapter')
+export class ChapterController {
+  constructor(private readonly chapterService: ChapterService) {}
 
   @Get()
   getAllChapters() {

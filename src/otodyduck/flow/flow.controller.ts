@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { FlowsService } from './flows.service';
-import { RequestOtodyduckFlowDTO } from './flows.model';
+import { FlowService } from './flow.service';
+import { RequestOtodyduckFlowDTO } from './flow.model';
 
-@Controller('flows')
+@Controller('flow')
 export class FlowsController {
-  constructor(private readonly flowService: FlowsService) {}
+  constructor(private readonly flowService: FlowService) {}
 
   @Get()
   getAllFlows() {

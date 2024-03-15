@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { OtodyduckUsersService } from '../users/users.service';
+import { OtodyduckUserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { OtodyduckUser } from '../typeorm/entities/User.entity';
-import { OtodyduckUserData } from '../users/users.model';
+import { OtodyduckUserData } from '../user/user.model';
 import { Message, Result } from 'src/utils/enums';
 import { AuthJwtTokenData } from './auth.model';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,7 +13,7 @@ import { Repository } from 'typeorm';
 export class AuthService {
   constructor(
     @InjectRepository(OtodyduckUser) private userRepository: Repository<OtodyduckUser>,
-    private readonly userService: OtodyduckUsersService,
+    private readonly userService: OtodyduckUserService,
     private readonly jwtService: JwtService
   ) {}
 

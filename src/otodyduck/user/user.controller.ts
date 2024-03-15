@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Put, Request, UseGuards } from '@nestjs/common';
-import { OtodyduckUsersService } from './users.service';
-import { OtodyduckUserRequest, UpdateOtodyduckUserDTO } from './users.model';
+import { OtodyduckUserService } from './user.service';
+import { OtodyduckUserRequest, UpdateOtodyduckUserDTO } from './user.model';
 import { JwtGuard } from '../auth/guards/jwt-auth.guard';
 
-@Controller('users')
-export class OtodyduckUsersController {
-  constructor(private readonly userService: OtodyduckUsersService) {}
+@Controller('user')
+export class OtodyduckUserController {
+  constructor(private readonly userService: OtodyduckUserService) {}
 
   @Get()
   async getAllUsers() {
