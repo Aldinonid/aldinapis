@@ -21,17 +21,20 @@ export class LandingPageService {
   async getLandingPage() {
     const users = await this.userRepository.find()
     const activities = await this.activityRepository.find()
-    const items = await this.itemRepository.find()
-    const categories = (await this.categoryRepository.find({ relations: ['items'] }))
+    const items = await this.itemRepository.find({ relations: ['images'] })
+    const categories = await this.categoryRepository.find({ relations: ['items', 'items.images'] })
 
     for (let i = 0; i < categories.length; i++) {
       for (let x = 0; x < categories[i].items.length; x++) {
-        const categoryItem = await this.itemRepository.findOneBy({ id: categories[i].items[x].id })
+        const categoryItem = await this.itemRepository.findOne({
+          where: { id: categories[i].items[x].id },
+          relations: ['images']
+        })
         if (!categoryItem) return
-        categoryItem.isPopular = false
+        categoryItem.is_popular = false
         this.itemRepository.save(categoryItem)
         if (categories[i].items[0] === categories[i].items[x]) {
-          categoryItem.isPopular = true
+          categoryItem.is_popular = true
           this.itemRepository.save(categoryItem)
         }
       }
@@ -39,22 +42,22 @@ export class LandingPageService {
 
     const testimonial = [
       {
-        imageUrl: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial2.jpg?alt=media&token=972f004d-b877-4e5b-badc-248b62c0a114",
+        image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial2.jpg?alt=media&token=972f004d-b877-4e5b-badc-248b62c0a114",
         name: "Giovaldin Family",
         rate: 4.55,
         content:
           "What a great trip with my family and I should try again next time soon ...",
-        familyName: "Aldin",
-        familyOccupation: "iOS Developer",
+        family_name: "Aldin",
+        family_occupation: "iOS Developer",
       },
       {
-        imageUrl: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial1.jpg?alt=media&token=d7483c51-1fe8-45b6-8b91-416be17018b0",
+        image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial1.jpg?alt=media&token=d7483c51-1fe8-45b6-8b91-416be17018b0",
         name: "Aldicia Family",
         rate: 4.55,
         content:
           "What a great trip with my family and I should try again next time soon ...",
-        familyName: "Felicia",
-        familyOccupation: "Product Designer",
+        family_name: "Felicia",
+        family_occupation: "Product Designer",
       }
     ]
 
@@ -83,22 +86,22 @@ export class LandingPageService {
 
     const testimonial = [
       {
-        imageUrl: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial2.jpg?alt=media&token=972f004d-b877-4e5b-badc-248b62c0a114",
+        image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial2.jpg?alt=media&token=972f004d-b877-4e5b-badc-248b62c0a114",
         name: "Giovaldin Family",
         rate: 4.55,
         content:
           "What a great trip with my family and I should try again next time soon ...",
-        familyName: "Aldin",
-        familyOccupation: "iOS Developer",
+        family_name: "Aldin",
+        family_occupation: "iOS Developer",
       },
       {
-        imageUrl: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial1.jpg?alt=media&token=d7483c51-1fe8-45b6-8b91-416be17018b0",
+        image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial1.jpg?alt=media&token=d7483c51-1fe8-45b6-8b91-416be17018b0",
         name: "Aldicia Family",
         rate: 4.55,
         content:
           "What a great trip with my family and I should try again next time soon ...",
-        familyName: "Felicia",
-        familyOccupation: "Product Designer",
+        family_name: "Felicia",
+        family_occupation: "Product Designer",
       }
     ]
     

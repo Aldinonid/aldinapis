@@ -28,13 +28,12 @@ export class ActivityService {
   }
 
   async createActivity(request: RequestActivityDTO) {
-    const { image_url, item_id, ...activityRequest } = request
+    const { item_id, ...activityRequest } = request
     const item = await this.itemRepository.findOneBy({ id: item_id })
     if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
     const newActivity = this.activityRepository.create({
       ...activityRequest,
-      imageUrl: image_url,
       item: item
     })
 
@@ -45,7 +44,7 @@ export class ActivityService {
   }
 
   async updateActivity(id: number, request: RequestActivityDTO) {
-    const { image_url, item_id, ...activityRequest } = request
+    const { item_id, ...activityRequest } = request
     const activity = await this.activityRepository.findOneBy({ id })
     if (!activity) throw new NotFoundException(Message.ACTIVITY_NOT_FOUND)
     
@@ -54,7 +53,6 @@ export class ActivityService {
 
     const result = await this.activityRepository.update(activity.id, {
       ...activityRequest,
-      imageUrl: image_url,
       item: item
     })
 

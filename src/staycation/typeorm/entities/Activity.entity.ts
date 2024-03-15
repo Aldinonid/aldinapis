@@ -17,7 +17,7 @@ export class StaycationActivity {
 
   @Column({name: 'image_url'})
   @IsNotEmpty()
-  imageUrl: string
+  image_url: string
 
   @ManyToOne(() => StaycationItem, (item) => item.activities)
   @JoinColumn({name: 'item_id'})

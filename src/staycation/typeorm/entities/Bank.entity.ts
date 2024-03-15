@@ -8,11 +8,11 @@ export class StaycationBank {
 
   @Column({name: 'bank_name'})
   @IsNotEmpty()
-  bankName: string
+  bank_name: string
   
   @Column({name: 'account_number'})
   @IsNotEmpty()
-  accountNumber: string
+  account_number: string
 
   @Column()
   @IsNotEmpty()

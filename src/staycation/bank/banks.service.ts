@@ -24,24 +24,15 @@ export class BankService {
   }
 
   async createBank(request: RequestBankDTO) {
-    const newBank = this.bankRepository.create({
-      ...request,
-      accountNumber: request.account_number,
-      bankName: request.bank_name
-    })
+    const newBank = this.bankRepository.create(request)
     return new Result(Message.SUCCESS, await this.bankRepository.save(newBank))
   }
 
   async updateBank(id: number, request: RequestBankDTO) {
-    const { account_number, bank_name, ...bankRequest } = request
     const bank = await this.bankRepository.findOneBy({ id })
     if (!bank) throw new NotFoundException(Message.BANK_NOT_FOUND)
 
-    const result = await this.bankRepository.update(bank.id, {
-      ...bankRequest,
-      accountNumber: account_number,
-      bankName: bank_name
-    })
+    const result = await this.bankRepository.update(bank.id, request)
 
     if (!result.affected) throw new InternalServerErrorException()
 

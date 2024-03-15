@@ -30,13 +30,13 @@ export class StaycationItem {
   country: string
 
   @Column({name: 'is_popular', default: false})
-  isPopular: boolean
+  is_popular: boolean
 
   @Column()
   unit: string
 
   @Column({name: 'sum_booking', nullable: true})
-  sumBooking: number
+  sum_booking: number
 
   @ManyToOne(() => StaycationCategory, (category) => category.items, { nullable: true })
   @JoinColumn({name: 'category_id'})

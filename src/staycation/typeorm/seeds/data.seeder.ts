@@ -10,9 +10,7 @@ export default class StaycationDataSeeder implements Seeder {
     await dataSource.query('TRUNCATE "staycation_images" RESTART IDENTITY;')
 
     const repository = dataSource.getRepository(StaycationImage)
-    await repository.insert({
-      imageUrl: ''
-    })
+    await repository.insert({})
   }
 
 }

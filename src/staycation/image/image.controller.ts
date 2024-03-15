@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { ImageService } from './image.service';
-import { Request } from 'express';
 import { RequestImageDTO } from './image.model';
 
 @Controller('image')
@@ -19,7 +18,7 @@ export class ImageController {
 
   @Post()
   createImage(@Body() request: RequestImageDTO) {
-    return this.imageService.createImage(request.image_url)
+    return this.imageService.createImage(request)
   }
 
   @Put(':id')
@@ -27,7 +26,7 @@ export class ImageController {
     @Param('id', ParseIntPipe) id: number,
     @Body() request: RequestImageDTO
   ) {
-    return this.imageService.updateImage(id, request.image_url)
+    return this.imageService.updateImage(id, request)
   }
 
   @Delete(':id')

@@ -28,13 +28,12 @@ export class FeatureService {
   }
 
   async createFeature(request: RequestFeatureDTO) {
-    const { item_id, image_url, ...featureRequest } = request
+    const { item_id, ...featureRequest } = request
     const item = await this.itemRepository.findOneBy({ id: item_id })
     if(!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
     const newFeature = this.featureRepository.create({
       ...featureRequest,
-      imageUrl: image_url,
       item: item
     })
     
@@ -45,7 +44,7 @@ export class FeatureService {
   }
 
   async updateFeature(id: number, request: RequestFeatureDTO) {
-    const { item_id, image_url, ...featureRequest } = request
+    const { item_id, ...featureRequest } = request
     const feature = await this.featureRepository.findOneBy({ id })
     if (!feature) throw new NotFoundException(Message.FEATURE_NOT_FOUND)
 
@@ -54,7 +53,6 @@ export class FeatureService {
 
     const result = await this.featureRepository.update(feature.id, {
       ...featureRequest,
-      imageUrl: image_url,
       item: item
     })
 

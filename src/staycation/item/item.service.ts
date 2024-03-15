@@ -33,12 +33,10 @@ export class ItemService {
   }
 
   async getItem(id: number) {
-    // const item = await this.itemRepository.findOne({ 
-    //   where: { id }, 
-    //   relations: ['feature', 'category', 'image']
-    // })
-    const item = await this.itemRepository.findOne({ where: { id } })
-    console.log(item?.features)
+    const item = await this.itemRepository.findOne({ 
+      where: { id }, 
+      relations: ['features', 'categories', 'images']
+    })
     if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
     return new Result(Message.SUCCESS, item)
@@ -46,9 +44,7 @@ export class ItemService {
 
   async createItem(request: RequestItemDTO) {
     const { 
-      is_popular,
       category_id,
-      sum_booking,
       feature_ids,
       image_ids,
       activity_ids,
@@ -61,8 +57,6 @@ export class ItemService {
 
     const newItem = this.itemRepository.create({
       ...itemRequest,
-      sumBooking: sum_booking,
-      isPopular: is_popular,
       category: category || undefined,
       features: features,
       activities: activities,
@@ -77,8 +71,6 @@ export class ItemService {
 
   async updateItem(id: number, request: RequestItemDTO) {
     const { 
-      is_popular,
-      sum_booking,
       category_id,
       feature_ids,
       image_ids,
@@ -98,8 +90,6 @@ export class ItemService {
     item.updatedAt = new Date()
     Object.assign(item, {
       ...itemRequest,
-      sumBooking: sum_booking,
-      isPopular: is_popular,
       category: category,
       features: features,
       activities: activities,

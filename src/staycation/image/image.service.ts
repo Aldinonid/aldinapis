@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { StaycationImage } from '../typeorm/entities/Image.entity';
 import { Repository } from 'typeorm';
 import { Message, Result } from 'src/utils/enums';
+import { RequestImageDTO } from './image.model';
 
 @Injectable()
 export class ImageService {
@@ -22,17 +23,17 @@ export class ImageService {
     return new Result(Message.SUCCESS, image)
   }
 
-  async createImage(imageUrl: string) {
-    const newImage = this.imageRepository.create({ imageUrl })
+  async createImage(imageUrl: RequestImageDTO) {
+    const newImage = this.imageRepository.create(imageUrl)
     
     return new Result(Message.SUCCESS, await this.imageRepository.save(newImage))
   }
 
-  async updateImage(id: number, imageUrl: string) {
+  async updateImage(id: number, imageUrl: RequestImageDTO) {
     const image = await this.imageRepository.findOneBy({ id })
     if (!image) throw new NotFoundException(Message.IMAGE_NOT_FOUND)
 
-    const result = await this.imageRepository.update(id, { imageUrl })
+    const result = await this.imageRepository.update(id, imageUrl)
 
     if (!result.affected) throw new InternalServerErrorException()
 
