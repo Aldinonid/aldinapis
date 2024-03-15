@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckChapter } from '../typeorm/entities/Chapter.entity';
 import { Repository } from 'typeorm';
@@ -20,14 +20,14 @@ export class ChaptersService {
 
   async getChapter(id: number) {
     const chapter = await this.chapterRepository.findOne({ where: { id } })
-    if (!chapter) throw new HttpException(Message.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!chapter) throw new NotFoundException(Message.CHAPTER_NOT_FOUND)
 
     return new Result(Message.SUCCESS, chapter)
   }
 
   async createChapter(request: RequestOtodyduckChapterDTO) {
     const course = await this.courseRepository.findOne({ where: { id: request.course_id } })
-    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
 
     const chapter = this.chapterRepository.create(request)
     chapter.course = course
@@ -39,10 +39,10 @@ export class ChaptersService {
   async updateChapter(id: number, request: RequestOtodyduckChapterDTO) {
     const { course_id, ...chapterRequest } = request
     const chapter = await this.chapterRepository.findOne({ where: { id } })
-    if (!chapter) throw new HttpException(Message.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!chapter) throw new NotFoundException(Message.CHAPTER_NOT_FOUND)
 
     const course = await this.courseRepository.findOne({ where: { id: course_id } })
-    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
 
     chapter.updatedAt = new Date()
     chapter.course = course
@@ -53,7 +53,7 @@ export class ChaptersService {
 
   async deleteChapter(id: number) {
     const chapter = await this.chapterRepository.findOne({ where: { id } })
-    if (!chapter) throw new HttpException(Message.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!chapter) throw new NotFoundException(Message.CHAPTER_NOT_FOUND)
 
     await this.chapterRepository.delete({ id })
     

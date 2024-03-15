@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
 import { In, Repository } from 'typeorm';
@@ -46,29 +46,27 @@ export class CoursesService {
       where: { id: id }, 
       relations: { review: true, tools: true, user: true } 
     })
-    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
 
     return new Result(Message.SUCCESS, course)
   }
 
   async getCourseById(id: number): Promise<OtodyduckCourse> {
     const course = await this.courseRepository.findOneBy({ id })
-    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
     return course
   }
 
   async createCourse(request: RequestOtodyduckCourseDTO) {
     const isNameExist = await this.courseRepository.findOne({ where: { name: request.name }})
-    if (isNameExist) throw new HttpException(Message.NAME_EXIST, HttpStatus.CONFLICT)
+    if (isNameExist) throw new ConflictException(Message.NAME_EXIST)
 
     const mentor = await this.userRepository.findOne({ where: { id: request.mentor_id } })
-    if (!mentor) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!mentor) throw new NotFoundException(Message.USER_NOT_FOUND)
 
     const course = this.courseRepository.create(request)
-    if (request.price === 0 && request.type === CourseType.PREMIUM) throw new HttpException(
-      Message.COURSE_NOT_HAVE_PRICE, 
-      HttpStatus.BAD_REQUEST
-    )
+    if (request.price === 0 && request.type === CourseType.PREMIUM) 
+      throw new BadRequestException(Message.COURSE_NOT_HAVE_PRICE)
 
     const tools = await this.toolRepository.findBy({ id: In(request.tool_ids) })
 
@@ -84,10 +82,10 @@ export class CoursesService {
   async updateCourse(id: number, request: RequestOtodyduckCourseDTO) {
     const { tool_ids, mentor_id, ...courseRequest} = request
     const course = await this.courseRepository.findOne({ where: { id } })
-    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
     
     const mentor = await this.userRepository.findOne({ where: { id: mentor_id } })
-    if (!mentor) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!mentor) throw new NotFoundException(Message.USER_NOT_FOUND)
 
     const tools = await this.toolRepository.findBy({ id: In(tool_ids) })
 
@@ -104,7 +102,7 @@ export class CoursesService {
 
   async deleteCourse(id: number) {
     const course = await this.courseRepository.findOne({ where: { id } })
-    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
 
     await this.courseRepository.delete({ id })
 

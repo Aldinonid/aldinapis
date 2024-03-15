@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { NotFoundException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckTool } from '../typeorm/entities/Tool.entity';
 import { Repository } from 'typeorm';
@@ -22,7 +22,7 @@ export class ToolsService {
 
   async getTool(id: number) {
     const tool = await this.toolRepository.findOne({ where: { id } })
-    if (!tool) throw new HttpException(Message.TOOL_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!tool) throw new NotFoundException(Message.TOOL_NOT_FOUND)
 
     return new Result(Message.SUCCESS, tool)
   }
@@ -35,7 +35,7 @@ export class ToolsService {
 
   async updateTool(id: number, request: RequestOtodyduckToolDTO) {
     const tool = await this.toolRepository.findOne({ where: { id } })
-    if (!tool) throw new HttpException(Message.TOOL_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!tool) throw new NotFoundException(Message.TOOL_NOT_FOUND)
 
     tool.updatedAt = new Date()
     Object.assign(tool, request)
@@ -45,7 +45,7 @@ export class ToolsService {
 
   async deleteTool(id: number) {
     const tool = await this.toolRepository.findOne({ where: { id } })
-    if (!tool) throw new HttpException(Message.TOOL_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!tool) throw new NotFoundException(Message.TOOL_NOT_FOUND)
 
     await this.toolRepository.delete({ id })
 

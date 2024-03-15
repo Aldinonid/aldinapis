@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckLesson } from '../typeorm/entities/Lesson.entity';
 import { Repository } from 'typeorm';
@@ -20,14 +20,14 @@ export class LessonsService {
 
   async getLesson(id: number) {
     const lesson = await this.lessonRepository.findOne({ where: { id }, relations: ['chapter'] })
-    if (!lesson) throw new HttpException(Message.LESSON_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!lesson) throw new NotFoundException(Message.LESSON_NOT_FOUND)
 
     return new Result(Message.SUCCESS, lesson)
   }
 
   async createLesson(request: RequestOtodyduckLessonDTO) {
     const chapter = await this.chapterRepository.findOne({ where: { id: request.chapter_id } })
-    if (!chapter) throw new HttpException(Message.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!chapter) throw new NotFoundException(Message.CHAPTER_NOT_FOUND)
 
     const lesson = this.lessonRepository.create({
       ...request,
@@ -42,10 +42,10 @@ export class LessonsService {
   async updateLesson(id: number, request: RequestOtodyduckLessonDTO) {
     const { chapter_id, video, ...lessonRequest } = request
     const lesson = await this.lessonRepository.findOne({ where: { id } })
-    if (!lesson) throw new HttpException(Message.LESSON_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!lesson) throw new NotFoundException(Message.LESSON_NOT_FOUND)
 
     const chapter = await this.chapterRepository.findOne({ where: { id: chapter_id } })
-    if (!chapter) throw new HttpException(Message.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!chapter) throw new NotFoundException(Message.CHAPTER_NOT_FOUND)
     
     await this.lessonRepository.update(lesson.id, {
       ...lessonRequest,
@@ -58,7 +58,7 @@ export class LessonsService {
 
   async deleteLesson(id: number) {
     const lesson = await this.lessonRepository.findOne({ where: { id } })
-    if (!lesson) throw new HttpException(Message.LESSON_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!lesson) throw new NotFoundException(Message.LESSON_NOT_FOUND)
 
     await this.lessonRepository.delete({ id })
 

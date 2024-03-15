@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { OtodyduckUsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -76,7 +76,7 @@ export class AuthService {
 
   async logout(data: OtodyduckUserData) {
     const user = await this.userRepository.findOneBy({ id: data.id })
-    if (!user) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
 
     await this.userRepository.update(user.id, {
       refreshToken: '',

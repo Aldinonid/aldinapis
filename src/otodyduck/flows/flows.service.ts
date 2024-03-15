@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { OtodyduckFlow } from '../typeorm/entities/Flow.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -20,7 +20,7 @@ export class FlowsService {
 
   async getFlow(slug: string) {
     const isNameExist = await this.flowRepository.findOne({ where: { slug: slug }})
-    if (isNameExist) throw new HttpException(Message.FLOW_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (isNameExist) throw new NotFoundException(Message.FLOW_NOT_FOUND)
 
     const courses = await this.courseRepository.find({
       
@@ -32,7 +32,7 @@ export class FlowsService {
     const isNameExist = await this.flowRepository.findOne({ where: { name: request.name }})
     if (
       isNameExist?.name.toLowerCase() === request.name.toLowerCase()
-    ) throw new HttpException(Message.NAME_EXIST, HttpStatus.CONFLICT)
+    ) throw new ConflictException(Message.NAME_EXIST)
 
     const newFlow = this.flowRepository.create(request)
     newFlow.slug = slugify(request.name)
@@ -44,7 +44,7 @@ export class FlowsService {
 
   async updateFlow(id: number, request: RequestOtodyduckFlowDTO) {
     const flow = await this.flowRepository.findOne({ where: { id } })
-    if (!flow) return new HttpException(Message.FLOW_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!flow) return new NotFoundException(Message.FLOW_NOT_FOUND)
 
     Object.assign(flow, request)
     flow.slug = slugify(request.name)
@@ -55,7 +55,7 @@ export class FlowsService {
 
   async deleteFlow(id: number) {
     const flow = await this.flowRepository.findOne({ where: { id } })
-    if (!flow) return new HttpException(Message.FLOW_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!flow) return new NotFoundException(Message.FLOW_NOT_FOUND)
 
     await this.flowRepository.delete({ id })
 

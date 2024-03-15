@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { CreateOtodyduckUserParams, OtodyduckUserData, UpdateOtodyduckUserParams } from './users.model';
@@ -20,14 +20,14 @@ export class OtodyduckUsersService {
 
   async findUser(id: number) {
     const user = await this.userRepository.findOneBy({ id })
-    if (!user) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
 
     return new Result(Message.SUCCESS, user)
   }
 
   async getUserId(id: number): Promise<OtodyduckUser> {
     const user = await this.userRepository.findOneBy({ id })
-    if (!user) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
     return user
   }
 
@@ -41,14 +41,14 @@ export class OtodyduckUsersService {
         'otodyduck_users.accessToken'
       ])
       .getOne()
-    if (!user) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
 
     return user
   }
 
   async fetchUser(data: OtodyduckUserData) {
     const user = await this.userRepository.findOneBy({ id: data.id })
-    if (!user) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
 
     return new Result(Message.SUCCESS, user)
   }
@@ -56,7 +56,7 @@ export class OtodyduckUsersService {
   async register(request: CreateOtodyduckUserParams) {
     const newUser = this.userRepository.create(request)
     const isEmailExist = await this.userRepository.findOne({where: { email: request.email }})
-    if (isEmailExist) throw new HttpException(Message.EMAIL_EXIST, HttpStatus.CONFLICT)
+    if (isEmailExist) throw new ConflictException(Message.EMAIL_EXIST)
     const { password, ...createdUser } = await this.userRepository.save(newUser)
 
     return new Result(Message.SUCCESS, createdUser)
@@ -64,7 +64,7 @@ export class OtodyduckUsersService {
 
   async updateUser(id: number, request: UpdateOtodyduckUserParams) {
     const user = await this.userRepository.findOneBy({ id })
-    if (!user) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
 
     const isEmailExist = await this.userRepository.findOne({
       where: {
@@ -72,7 +72,7 @@ export class OtodyduckUsersService {
         id: Not(user.id)
       }
     })
-    if (isEmailExist) throw new HttpException(Message.EMAIL_EXIST, HttpStatus.CONFLICT)
+    if (isEmailExist) throw new ConflictException(Message.EMAIL_EXIST)
 
     if (request.password) request.password = await bcrypt.hash(request.password, 10)
     user.updatedAt = new Date()
@@ -85,7 +85,7 @@ export class OtodyduckUsersService {
 
   async deleteUser(id: number) {
     const user = await this.userRepository.findOneBy({ id });
-    if (!user) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
     await this.userRepository.delete({ id })
 
     return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
