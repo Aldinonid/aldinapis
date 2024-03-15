@@ -15,11 +15,11 @@ export class OtodyduckReview {
 
   @OneToOne(() => OtodyduckCourse)
   @JoinColumn({name: 'course_id'})
-  courseId: OtodyduckCourse
+  course: OtodyduckCourse
 
   @OneToOne(() => OtodyduckUser)
   @JoinColumn({name: 'user_id'})
-  userId: OtodyduckUser
+  user: OtodyduckUser
 
   @CreateDateColumn({name: 'created_at'})
   createdAt: Date

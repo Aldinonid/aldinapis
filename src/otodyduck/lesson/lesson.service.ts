@@ -31,7 +31,7 @@ export class LessonService {
 
     const lesson = this.lessonRepository.create({
       ...request,
-      videoUrl: request.video,
+      video_url: request.video,
       chapter: chapter
     })
 
@@ -50,7 +50,7 @@ export class LessonService {
     await this.lessonRepository.update(lesson.id, {
       ...lessonRequest,
       chapter: chapter,
-      videoUrl: video
+      video_url: video
     })
 
     return new Result(Message.SUCCESS, await this.lessonRepository.findOneBy({ id }))

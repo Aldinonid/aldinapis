@@ -28,11 +28,11 @@ export class AuthService {
 
   async validateUserToken(token: string, email: string, isRefresh: boolean = false) {
     const user = await this.userService.findUserByEmail(email)
-    if (user && isRefresh ? user.refreshToken === token : user.accessToken === token) {
+    if (user && isRefresh ? user.refresh_token === token : user.access_token === token) {
       const {
         password, 
-        refreshToken, 
-        accessToken, 
+        refresh_token, 
+        access_token, 
         ...result
       } = user
       return result
@@ -61,14 +61,14 @@ export class AuthService {
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' })
 
     await this.userRepository.update(user.id, {
-      accessToken: accessToken,
-      refreshToken: refreshToken
+      access_token: accessToken,
+      refresh_token: refreshToken
     })
 
     const result = {
       ...user,
-      accessToken: accessToken,
-      refreshToken: refreshToken
+      access_token: accessToken,
+      refresh_token: refreshToken
     }
 
     return new Result(Message.SUCCESS, result)
@@ -79,8 +79,8 @@ export class AuthService {
     if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
 
     await this.userRepository.update(user.id, {
-      refreshToken: '',
-      accessToken: ''
+      refresh_token: '',
+      access_token: ''
     })
 
     return new Result(Message.SUCCESS, Message.LOGOUT_SUCCESS)
@@ -100,9 +100,9 @@ export class AuthService {
     }
 
     const accessToken = this.jwtService.sign(payload)
-    await this.userRepository.update(user.id, { accessToken: accessToken })
+    await this.userRepository.update(user.id, { access_token: accessToken })
 
-    return { accessToken: accessToken }
+    return { access_token: accessToken }
   }
   
 }

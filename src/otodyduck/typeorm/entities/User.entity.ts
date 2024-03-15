@@ -45,14 +45,14 @@ export class OtodyduckUser {
     nullable: true,
     select: false
   })
-  refreshToken: string
+  refresh_token: string
 
   @Column({
     name: 'access_token',
     nullable: true,
     select: false
   })
-  accessToken: string
+  access_token: string
 
   @OneToMany(() => OtodyduckCourse, (course) => course.id)
   courses: OtodyduckCourse[]

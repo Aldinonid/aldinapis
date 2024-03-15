@@ -12,7 +12,7 @@ export class OtodyduckLesson {
   name: string
 
   @Column({name: 'video_url'})
-  videoUrl: string
+  video_url: string
 
   @ManyToOne(() => OtodyduckChapter, (chapter) => chapter.lessons)
   @JoinColumn({name: 'chapter_id'})

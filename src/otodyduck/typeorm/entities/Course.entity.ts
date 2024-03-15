@@ -75,7 +75,7 @@ export class OtodyduckCourse {
   @JoinColumn({name: 'user_id'})
   user: OtodyduckUser
 
-  @OneToOne(() => OtodyduckReview, (review) => review.courseId)
+  @OneToOne(() => OtodyduckReview, (review) => review.course)
   review: OtodyduckReview
 
   @CreateDateColumn({name: 'created_at'})
