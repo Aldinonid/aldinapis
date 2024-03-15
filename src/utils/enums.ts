@@ -12,6 +12,12 @@ export enum ResponseMessage {
   COURSE_NOT_FOUND = 'Course not found',
   COURSE_NOT_HAVE_PRICE = 'Premium course should have price',
   TOKEN_EXPIRED = 'Token expired',
+  BANK_NOT_FOUND = 'Bank not found',
+  CATEGORY_NOT_FOUND = 'Category not found',
+  FEATURE_NOT_FOUND = 'Feature not found',
+  ACTIVITY_NOT_FOUND = 'Activity not found',
+  ITEM_NOT_FOUND = 'Item not found',
+  IMAGE_NOT_FOUND = 'Image not found',
 
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED'
