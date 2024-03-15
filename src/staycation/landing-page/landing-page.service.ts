@@ -22,19 +22,6 @@ export class LandingPageService {
     const users = await this.userRepository.find()
     const activities = await this.activityRepository.find()
     const items = await this.itemRepository.find()
-
-    // const categories = (await this.categoryRepository.find({ relations: ['items'] }))
-    //   .map((category) => category.items.map( async (item) => {
-    //     const categoryItem = await this.itemRepository.findOneBy({ id: item.id })
-    //     if (!categoryItem) return
-    //     categoryItem.isPopular = false
-    //     await this.itemRepository.save(categoryItem)
-    //     if (category.items[0].id === item.id) {
-    //       categoryItem.isPopular = true
-    //       await this.itemRepository.save(categoryItem)
-    //     }
-    //     return await this.categoryRepository.find({ relations: ['items'] })
-    //   }))
     const categories = (await this.categoryRepository.find({ relations: ['items'] }))
 
     for (let i = 0; i < categories.length; i++) {
