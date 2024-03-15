@@ -50,15 +50,26 @@ export class LandingPageService {
       }
     }
 
-    const testimonial = {
-      imageUrl: "/images/testimonial2.jpg",
-      name: "Happy Family",
-      rate: 4.55,
-      content:
-        "What a great trip with my family and I should try again next time soon ...",
-      familyName: "Angga",
-      familyOccupation: "Product Designer",
-    }
+    const testimonial = [
+      {
+        imageUrl: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial2.jpg?alt=media&token=972f004d-b877-4e5b-badc-248b62c0a114",
+        name: "Giovaldin Family",
+        rate: 4.55,
+        content:
+          "What a great trip with my family and I should try again next time soon ...",
+        familyName: "Aldin",
+        familyOccupation: "iOS Developer",
+      },
+      {
+        imageUrl: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial1.jpg?alt=media&token=d7483c51-1fe8-45b6-8b91-416be17018b0",
+        name: "Aldicia Family",
+        rate: 4.55,
+        content:
+          "What a great trip with my family and I should try again next time soon ...",
+        familyName: "Felicia",
+        familyOccupation: "Product Designer",
+      }
+    ]
 
     const result = {
       hero: {
@@ -83,15 +94,26 @@ export class LandingPageService {
 
     const banks = await this.bankRepository.find()
 
-    const testimonial = {
-      imageUrl: "/images/testimonial2.jpg",
-      name: "Happy Family",
-      rate: 4.55,
-      content:
-        "What a great trip with my family and I should try again next time soon ...",
-      familyName: "Angga",
-      familyOccupation: "Product Designer",
-    }
+    const testimonial = [
+      {
+        imageUrl: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial2.jpg?alt=media&token=972f004d-b877-4e5b-badc-248b62c0a114",
+        name: "Giovaldin Family",
+        rate: 4.55,
+        content:
+          "What a great trip with my family and I should try again next time soon ...",
+        familyName: "Aldin",
+        familyOccupation: "iOS Developer",
+      },
+      {
+        imageUrl: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial1.jpg?alt=media&token=d7483c51-1fe8-45b6-8b91-416be17018b0",
+        name: "Aldicia Family",
+        rate: 4.55,
+        content:
+          "What a great trip with my family and I should try again next time soon ...",
+        familyName: "Felicia",
+        familyOccupation: "Product Designer",
+      }
+    ]
     
     const result = { item, banks, testimonial}
     
