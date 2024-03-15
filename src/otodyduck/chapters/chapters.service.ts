@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckChapter } from '../typeorm/entities/Chapter.entity';
 import { Repository } from 'typeorm';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { RequestOtodyduckChapterDTO } from './chapters.model';
 
 @Injectable()
@@ -15,49 +15,49 @@ export class ChaptersService {
 
   async getAllChapters() {
     const chapters = await this.chapterRepository.find()
-    return new Result(ResponseMessage.SUCCESS, chapters)
+    return new Result(Message.SUCCESS, chapters)
   }
 
   async getChapter(id: number) {
     const chapter = await this.chapterRepository.findOne({ where: { id } })
-    if (!chapter) throw new HttpException(ResponseMessage.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!chapter) throw new HttpException(Message.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
 
-    return new Result(ResponseMessage.SUCCESS, chapter)
+    return new Result(Message.SUCCESS, chapter)
   }
 
   async createChapter(request: RequestOtodyduckChapterDTO) {
     const course = await this.courseRepository.findOne({ where: { id: request.course_id } })
-    if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     const chapter = this.chapterRepository.create(request)
     chapter.course = course
 
     const newChapter = await this.chapterRepository.save(chapter)
-    return new Result(ResponseMessage.SUCCESS, newChapter)
+    return new Result(Message.SUCCESS, newChapter)
   }
 
   async updateChapter(id: number, request: RequestOtodyduckChapterDTO) {
     const { course_id, ...chapterRequest } = request
     const chapter = await this.chapterRepository.findOne({ where: { id } })
-    if (!chapter) throw new HttpException(ResponseMessage.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!chapter) throw new HttpException(Message.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     const course = await this.courseRepository.findOne({ where: { id: course_id } })
-    if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     chapter.updatedAt = new Date()
     chapter.course = course
     Object.assign(chapter, chapterRequest)
     const updatedChapter = await this.chapterRepository.save(chapter)
-    return new Result(ResponseMessage.SUCCESS, updatedChapter)
+    return new Result(Message.SUCCESS, updatedChapter)
   }
 
   async deleteChapter(id: number) {
     const chapter = await this.chapterRepository.findOne({ where: { id } })
-    if (!chapter) throw new HttpException(ResponseMessage.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!chapter) throw new HttpException(Message.CHAPTER_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     await this.chapterRepository.delete({ id })
     
-    return new Result(ResponseMessage.SUCCESS, ResponseMessage.DELETE_SUCCESS)
+    return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
   }
   
 }

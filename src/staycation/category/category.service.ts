@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { StaycationCategory } from '../typeorm/entities/Category.entity';
 import { In, Repository } from 'typeorm';
 import { StaycationItem } from '../typeorm/entities/Item.entity';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { RequestCategoryDTO } from './category.model';
 
 @Injectable()
@@ -15,16 +15,16 @@ export class CategoryService {
 
   async getAllCategories() {
     return new Result(
-      ResponseMessage.SUCCESS,
+      Message.SUCCESS,
       await this.categoryRepository.find()
     )
   }
 
   async getCategory(id: number) {
     const category = await this.categoryRepository.findOneBy({ id })
-    if (!category) throw new NotFoundException(ResponseMessage.CATEGORY_NOT_FOUND)
+    if (!category) throw new NotFoundException(Message.CATEGORY_NOT_FOUND)
 
-    return new Result(ResponseMessage.SUCCESS, category)
+    return new Result(Message.SUCCESS, category)
   }
 
   async createCategory(request: RequestCategoryDTO) {
@@ -37,7 +37,7 @@ export class CategoryService {
     })
 
     return new Result(
-      ResponseMessage.SUCCESS,
+      Message.SUCCESS,
       await this.categoryRepository.save(newCategory)
     )
   }
@@ -45,7 +45,7 @@ export class CategoryService {
   async updateCategory(id: number, request: RequestCategoryDTO) {
     const { item_ids, ...categoryRequest } = request
     const category = await this.categoryRepository.findOneBy({ id })
-    if (!category) throw new NotFoundException(ResponseMessage.CATEGORY_NOT_FOUND)
+    if (!category) throw new NotFoundException(Message.CATEGORY_NOT_FOUND)
     
     const items = await this.itemRepository.findBy({ id: In(item_ids) })
 
@@ -56,19 +56,19 @@ export class CategoryService {
     })
 
     return new Result(
-      ResponseMessage.SUCCESS,
+      Message.SUCCESS,
       await this.categoryRepository.save(category)
     )
   }
   
   async deleteCategory(id: number) {
     const category = await this.categoryRepository.findOneBy({ id })
-    if (!category) throw new NotFoundException(ResponseMessage.CATEGORY_NOT_FOUND)
+    if (!category) throw new NotFoundException(Message.CATEGORY_NOT_FOUND)
 
     const result = await this.categoryRepository.delete({ id })
 
     if (!result.affected) throw new InternalServerErrorException()  
     
-    return new Result(ResponseMessage.SUCCESS, ResponseMessage.DELETE_SUCCESS)
+    return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
   }
 }

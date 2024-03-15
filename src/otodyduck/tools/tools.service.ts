@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckTool } from '../typeorm/entities/Tool.entity';
 import { Repository } from 'typeorm';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { ListToolQueries, RequestOtodyduckToolDTO } from './tools.model';
 
 @Injectable()
@@ -17,38 +17,38 @@ export class ToolsService {
       tools.where('otodyduck_courses.id = :id', {id: query.course_id})
     }
 
-    return new Result(ResponseMessage.SUCCESS, await tools.getMany())
+    return new Result(Message.SUCCESS, await tools.getMany())
   }
 
   async getTool(id: number) {
     const tool = await this.toolRepository.findOne({ where: { id } })
-    if (!tool) throw new HttpException(ResponseMessage.TOOL_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!tool) throw new HttpException(Message.TOOL_NOT_FOUND, HttpStatus.NOT_FOUND)
 
-    return new Result(ResponseMessage.SUCCESS, tool)
+    return new Result(Message.SUCCESS, tool)
   }
 
   async createTool(request: RequestOtodyduckToolDTO) {
     const newTool = this.toolRepository.create(request)
     const createdTool = await this.toolRepository.save(newTool)
-    return new Result(ResponseMessage.SUCCESS, createdTool)
+    return new Result(Message.SUCCESS, createdTool)
   }
 
   async updateTool(id: number, request: RequestOtodyduckToolDTO) {
     const tool = await this.toolRepository.findOne({ where: { id } })
-    if (!tool) throw new HttpException(ResponseMessage.TOOL_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!tool) throw new HttpException(Message.TOOL_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     tool.updatedAt = new Date()
     Object.assign(tool, request)
     const updatedTool = await this.toolRepository.save(tool)
-    return new Result(ResponseMessage.SUCCESS, updatedTool)
+    return new Result(Message.SUCCESS, updatedTool)
   }
 
   async deleteTool(id: number) {
     const tool = await this.toolRepository.findOne({ where: { id } })
-    if (!tool) throw new HttpException(ResponseMessage.TOOL_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!tool) throw new HttpException(Message.TOOL_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     await this.toolRepository.delete({ id })
 
-    return new Result(ResponseMessage.SUCCESS, ResponseMessage.DELETE_SUCCESS)
+    return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
   }
 }

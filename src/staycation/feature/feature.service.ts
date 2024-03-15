@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StaycationFeature } from '../typeorm/entities/Feature.entity';
 import { RequestFeatureDTO } from './feature.model';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { StaycationItem } from '../typeorm/entities/Item.entity';
 
 @Injectable()
@@ -15,22 +15,22 @@ export class FeatureService {
 
   async getAllFeatures() {
     return new Result(
-      ResponseMessage.SUCCESS,
+      Message.SUCCESS,
       await this.featureRepository.find()
     )
   }
 
   async getFeature(id: number) {
     const feature = await this.featureRepository.findOneBy({ id })
-    if (!feature) throw new NotFoundException(ResponseMessage.FEATURE_NOT_FOUND)
+    if (!feature) throw new NotFoundException(Message.FEATURE_NOT_FOUND)
 
-    return new Result(ResponseMessage.SUCCESS, feature)
+    return new Result(Message.SUCCESS, feature)
   }
 
   async createFeature(request: RequestFeatureDTO) {
     const { item_id, image_url, ...featureRequest } = request
     const item = await this.itemRepository.findOneBy({ id: item_id })
-    if(!item) throw new NotFoundException(ResponseMessage.ITEM_NOT_FOUND)
+    if(!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
     const newFeature = this.featureRepository.create({
       ...featureRequest,
@@ -39,7 +39,7 @@ export class FeatureService {
     })
     
     return new Result(
-      ResponseMessage.SUCCESS,
+      Message.SUCCESS,
       await this.featureRepository.save(newFeature)
     )
   }
@@ -47,10 +47,10 @@ export class FeatureService {
   async updateFeature(id: number, request: RequestFeatureDTO) {
     const { item_id, image_url, ...featureRequest } = request
     const feature = await this.featureRepository.findOneBy({ id })
-    if (!feature) throw new NotFoundException(ResponseMessage.FEATURE_NOT_FOUND)
+    if (!feature) throw new NotFoundException(Message.FEATURE_NOT_FOUND)
 
     const item = await this.itemRepository.findOneBy({ id: item_id })
-    if(!item) throw new NotFoundException(ResponseMessage.ITEM_NOT_FOUND)
+    if(!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
     const result = await this.featureRepository.update(feature.id, {
       ...featureRequest,
@@ -61,20 +61,20 @@ export class FeatureService {
     if (!result.affected) throw new InternalServerErrorException()
 
     return new Result(
-      ResponseMessage.SUCCESS,
+      Message.SUCCESS,
       await this.featureRepository.findOneBy({ id })
     )
   }
 
   async deleteFeature(id: number) {
     const feature = await this.featureRepository.findOneBy({ id })
-    if (!feature) throw new NotFoundException(ResponseMessage.FEATURE_NOT_FOUND)
+    if (!feature) throw new NotFoundException(Message.FEATURE_NOT_FOUND)
 
     const result = await this.featureRepository.delete({ id })
 
     if (!result.affected) throw new InternalServerErrorException()
 
-    return new Result(ResponseMessage.SUCCESS, ResponseMessage.DELETE_SUCCESS)
+    return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
   }
 
 }

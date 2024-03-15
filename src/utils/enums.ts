@@ -1,4 +1,4 @@
-export enum ResponseMessage {
+export enum Message {
   USER_NOT_FOUND = 'User not found',
   INVALID_PASSWORD = 'Invalid password',
   EMAIL_EXIST = 'Email already exists',
@@ -31,11 +31,11 @@ export enum OtodyduckLevel {
 }
 
 export class Result<T> {
-  private readonly status: ResponseMessage
+  private readonly status: Message
   private readonly data: T
   private readonly token?: string
   
-  constructor(status: ResponseMessage, data: T, token?: string) {
+  constructor(status: Message, data: T, token?: string) {
     this.status = status
     this.data = data
     this.token = token

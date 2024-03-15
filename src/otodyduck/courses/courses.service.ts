@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
 import { In, Repository } from 'typeorm';
 import { CourseType, ListCourseQueries, RequestOtodyduckCourseDTO } from './courses.model';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { OtodyduckReview } from '../typeorm/entities/Review.entity';
 import { OtodyduckTool } from '../typeorm/entities/Tool.entity';
 import { slugify } from 'src/utils/commons';
@@ -38,7 +38,7 @@ export class CoursesService {
       .leftJoinAndSelect('otodyduck_courses.user', 'otodyduck_users')
       .getMany()
 
-    return new Result(ResponseMessage.SUCCESS, courseResult)
+    return new Result(Message.SUCCESS, courseResult)
   }
 
   async getCourse(id: number) {
@@ -46,27 +46,27 @@ export class CoursesService {
       where: { id: id }, 
       relations: { review: true, tools: true, user: true } 
     })
-    if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
 
-    return new Result(ResponseMessage.SUCCESS, course)
+    return new Result(Message.SUCCESS, course)
   }
 
   async getCourseById(id: number): Promise<OtodyduckCourse> {
     const course = await this.courseRepository.findOneBy({ id })
-    if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
     return course
   }
 
   async createCourse(request: RequestOtodyduckCourseDTO) {
     const isNameExist = await this.courseRepository.findOne({ where: { name: request.name }})
-    if (isNameExist) throw new HttpException(ResponseMessage.NAME_EXIST, HttpStatus.CONFLICT)
+    if (isNameExist) throw new HttpException(Message.NAME_EXIST, HttpStatus.CONFLICT)
 
     const mentor = await this.userRepository.findOne({ where: { id: request.mentor_id } })
-    if (!mentor) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!mentor) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     const course = this.courseRepository.create(request)
     if (request.price === 0 && request.type === CourseType.PREMIUM) throw new HttpException(
-      ResponseMessage.COURSE_NOT_HAVE_PRICE, 
+      Message.COURSE_NOT_HAVE_PRICE, 
       HttpStatus.BAD_REQUEST
     )
 
@@ -78,16 +78,16 @@ export class CoursesService {
 
     const createdCourse = await this.courseRepository.save(course)
 
-    return new Result(ResponseMessage.SUCCESS, createdCourse)
+    return new Result(Message.SUCCESS, createdCourse)
   }
 
   async updateCourse(id: number, request: RequestOtodyduckCourseDTO) {
     const { tool_ids, mentor_id, ...courseRequest} = request
     const course = await this.courseRepository.findOne({ where: { id } })
-    if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
     
     const mentor = await this.userRepository.findOne({ where: { id: mentor_id } })
-    if (!mentor) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!mentor) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     const tools = await this.toolRepository.findBy({ id: In(tool_ids) })
 
@@ -99,15 +99,15 @@ export class CoursesService {
     Object.assign(course, courseRequest)
 
     const updatedCourse = await this.courseRepository.save(course)
-    return new Result(ResponseMessage.SUCCESS, updatedCourse)
+    return new Result(Message.SUCCESS, updatedCourse)
   }
 
   async deleteCourse(id: number) {
     const course = await this.courseRepository.findOne({ where: { id } })
-    if (!course) throw new HttpException(ResponseMessage.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!course) throw new HttpException(Message.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     await this.courseRepository.delete({ id })
 
-    return new Result(ResponseMessage.SUCCESS, ResponseMessage.DELETE_SUCCESS)
+    return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
   }
 }

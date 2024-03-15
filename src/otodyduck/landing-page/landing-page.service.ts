@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
 import { OtodyduckUser, OtodyduckUserRole } from '../typeorm/entities/User.entity';
 import { Repository } from 'typeorm';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 
 @Injectable()
 export class LandingPageService {
@@ -25,6 +25,6 @@ export class LandingPageService {
       class: courses
     }
     
-    return new Result(ResponseMessage.SUCCESS, result)
+    return new Result(Message.SUCCESS, result)
   }
 }

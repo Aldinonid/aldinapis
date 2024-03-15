@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { OtodyduckUser } from '../typeorm/entities/User.entity';
 import { OtodyduckUserData } from '../users/users.model';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { AuthJwtTokenData } from './auth.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   expiredTokenCheck = async (expDate: number) => (new Date(expDate * 1000) < new Date()) 
-    ? new Result(ResponseMessage.FAILED, ResponseMessage.TOKEN_EXPIRED) 
+    ? new Result(Message.FAILED, Message.TOKEN_EXPIRED) 
     : null
 
   async login(user: OtodyduckUserData) {
@@ -71,19 +71,19 @@ export class AuthService {
       refreshToken: refreshToken
     }
 
-    return new Result(ResponseMessage.SUCCESS, result)
+    return new Result(Message.SUCCESS, result)
   }
 
   async logout(data: OtodyduckUserData) {
     const user = await this.userRepository.findOneBy({ id: data.id })
-    if (!user) throw new HttpException(ResponseMessage.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
+    if (!user) throw new HttpException(Message.USER_NOT_FOUND, HttpStatus.NOT_FOUND)
 
     await this.userRepository.update(user.id, {
       refreshToken: '',
       accessToken: ''
     })
 
-    return new Result(ResponseMessage.SUCCESS, ResponseMessage.LOGOUT_SUCCESS)
+    return new Result(Message.SUCCESS, Message.LOGOUT_SUCCESS)
   }
 
   async refreshToken(user: OtodyduckUserData) {

@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { InjectRepository } from '@nestjs/typeorm';
 import { StaycationBank } from '../typeorm/entities/Bank.entity';
 import { Repository } from 'typeorm';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { RequestBankDTO } from './banks.model';
 
 @Injectable()
@@ -11,16 +11,16 @@ export class BankService {
 
   async getAllBanks() {
     return new Result(
-      ResponseMessage.SUCCESS, 
+      Message.SUCCESS, 
       await this.bankRepository.find()
     )
   }
 
   async getBank(id: number) {
     const bank = await this.bankRepository.findOneBy({ id })
-    if (!bank) throw new NotFoundException(ResponseMessage.BANK_NOT_FOUND)
+    if (!bank) throw new NotFoundException(Message.BANK_NOT_FOUND)
 
-    return new Result(ResponseMessage.SUCCESS, bank)
+    return new Result(Message.SUCCESS, bank)
   }
 
   async createBank(request: RequestBankDTO) {
@@ -29,13 +29,13 @@ export class BankService {
       accountNumber: request.account_number,
       bankName: request.bank_name
     })
-    return new Result(ResponseMessage.SUCCESS, await this.bankRepository.save(newBank))
+    return new Result(Message.SUCCESS, await this.bankRepository.save(newBank))
   }
 
   async updateBank(id: number, request: RequestBankDTO) {
     const { account_number, bank_name, ...bankRequest } = request
     const bank = await this.bankRepository.findOneBy({ id })
-    if (!bank) throw new NotFoundException(ResponseMessage.BANK_NOT_FOUND)
+    if (!bank) throw new NotFoundException(Message.BANK_NOT_FOUND)
 
     const result = await this.bankRepository.update(bank.id, {
       ...bankRequest,
@@ -46,19 +46,19 @@ export class BankService {
     if (!result.affected) throw new InternalServerErrorException()
 
     return new Result(
-      ResponseMessage.SUCCESS, 
+      Message.SUCCESS, 
       await this.bankRepository.findOneBy({ id })
     )
   }
 
   async deleteBank(id: number) {
     const bank = await this.bankRepository.findOneBy({ id })
-    if (!bank) throw new NotFoundException(ResponseMessage.BANK_NOT_FOUND)
+    if (!bank) throw new NotFoundException(Message.BANK_NOT_FOUND)
 
     const result = await this.bankRepository.delete({ id })
 
     if(!result.affected) throw new InternalServerErrorException()
 
-    return new Result(ResponseMessage.SUCCESS, ResponseMessage.DELETE_SUCCESS)
+    return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
   }
 }

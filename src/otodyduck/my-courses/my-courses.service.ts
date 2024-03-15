@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckMyCourse } from '../typeorm/entities/MyCourse.entity';
 import { Repository } from 'typeorm';
 import { RequestOtodyduckMyCourseDTO } from './my-courses.model';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { OtodyduckUserData } from '../users/users.model';
 import { OtodyduckUsersService } from '../users/users.service';
 import { CoursesService } from '../courses/courses.service';
@@ -20,7 +20,7 @@ export class MyCoursesService {
     const myCourses = await this.myCourseRepository.find({ relations: ['user', 'course'] })
     const result = myCourses.filter((course) => course.user.id === data.id ).map((course) => course.course)
 
-    return new Result(ResponseMessage.SUCCESS, result)
+    return new Result(Message.SUCCESS, result)
   }
 
   async enroll(request: RequestOtodyduckMyCourseDTO, data: OtodyduckUserData) {
@@ -30,7 +30,7 @@ export class MyCoursesService {
 
     const createdMyCourse = await this.myCourseRepository.save(myCourse)
     
-    return new Result(ResponseMessage.SUCCESS, createdMyCourse)
+    return new Result(Message.SUCCESS, createdMyCourse)
   }
   
 }

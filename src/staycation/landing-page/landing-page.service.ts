@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { StaycationItem } from '../typeorm/entities/Item.entity';
 import { StaycationCategory } from '../typeorm/entities/Category.entity';
 import { StaycationActivity } from '../typeorm/entities/Activity.entity';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { StaycationBank } from '../typeorm/entities/Bank.entity';
 
 @Injectable()
@@ -71,7 +71,7 @@ export class LandingPageService {
       testimonial: testimonial
     }
 
-    return new Result(ResponseMessage.SUCCESS, result)
+    return new Result(Message.SUCCESS, result)
   }
 
   async getDetail(id: number) {
@@ -79,7 +79,7 @@ export class LandingPageService {
       where: { id }, 
       relations: ['category', 'features', 'images', 'activities'] 
     })
-    if (!item) throw new NotFoundException(ResponseMessage.ITEM_NOT_FOUND)
+    if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
     const banks = await this.bankRepository.find()
 
@@ -95,7 +95,7 @@ export class LandingPageService {
     
     const result = { item, banks, testimonial}
     
-    return new Result(ResponseMessage.SUCCESS, result)
+    return new Result(Message.SUCCESS, result)
   }
   
 }

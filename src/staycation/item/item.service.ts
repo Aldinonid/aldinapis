@@ -5,7 +5,7 @@ import { StaycationFeature } from '../typeorm/entities/Feature.entity';
 import { StaycationItem } from '../typeorm/entities/Item.entity';
 import { StaycationCategory } from '../typeorm/entities/Category.entity';
 import { RequestItemDTO } from './item.model';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 import { StaycationActivity } from '../typeorm/entities/Activity.entity';
 import { StaycationImage } from '../typeorm/entities/Image.entity';
 
@@ -27,7 +27,7 @@ export class ItemService {
       .leftJoinAndSelect('staycation_items.images', 'staycation_images')
 
     return new Result(
-      ResponseMessage.SUCCESS,
+      Message.SUCCESS,
       await items.getMany()
     )
   }
@@ -39,9 +39,9 @@ export class ItemService {
     // })
     const item = await this.itemRepository.findOne({ where: { id } })
     console.log(item?.features)
-    if (!item) throw new NotFoundException(ResponseMessage.ITEM_NOT_FOUND)
+    if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
-    return new Result(ResponseMessage.SUCCESS, item)
+    return new Result(Message.SUCCESS, item)
   }
 
   async createItem(request: RequestItemDTO) {
@@ -70,7 +70,7 @@ export class ItemService {
     })
 
     return new Result(
-      ResponseMessage.SUCCESS,
+      Message.SUCCESS,
       await this.itemRepository.save(newItem)
     )
   }
@@ -93,7 +93,7 @@ export class ItemService {
 
     const item = await this.itemRepository.findOne({ where: { id } })
 
-    if (!item) throw new NotFoundException(ResponseMessage.ITEM_NOT_FOUND)
+    if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
     item.updatedAt = new Date()
     Object.assign(item, {
@@ -107,20 +107,20 @@ export class ItemService {
     })
 
     return new Result(
-      ResponseMessage.SUCCESS,
+      Message.SUCCESS,
       await this.itemRepository.save(item)
     )
   }
 
   async deleteItem(id: number) {
     const item = await this.itemRepository.findOneBy({ id })
-    if (!item) throw new NotFoundException(ResponseMessage.ITEM_NOT_FOUND)
+    if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
     const result = await this.itemRepository.delete({ id })
 
     if(!result.affected) throw new InternalServerErrorException()
     
-    return new Result(ResponseMessage.SUCCESS, ResponseMessage.DELETE_SUCCESS)
+    return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
   }
   
 }

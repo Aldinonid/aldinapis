@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ResponseMessage, Result } from 'src/utils/enums';
+import { Message, Result } from 'src/utils/enums';
 
 @Injectable()
 export class KatakanjiService {
@@ -828,7 +828,7 @@ export class KatakanjiService {
         quizscore: 0
       }
     ]
-    return new Result(ResponseMessage.SUCCESS, articles)
+    return new Result(Message.SUCCESS, articles)
   }
 
   getAllOnboardingQuestions() {
@@ -843,7 +843,7 @@ export class KatakanjiService {
       {kanji: "教", questionTitle: "Apakah arti dari kanji berikut ini?", answers: ["Diajar", "Baru", "Belajar", "Mengajar"], correctAnswer: "Mengajar"},
       {kanji: "強", questionTitle: "Apakah arti dari kanji berikut ini?", answers: ["Lemah", "Semangat", "Kuat", "Latihan"], correctAnswer: "Kuat"},
     ]
-    return new Result(ResponseMessage.SUCCESS, questions)
+    return new Result(Message.SUCCESS, questions)
   }
 
 }
