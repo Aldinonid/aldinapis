@@ -105,4 +105,10 @@ export class AuthService {
     return { access_token: accessToken }
   }
   
+  async getUserDetail(data: OtodyduckUserData) {
+    const user = await this.userRepository.findOneBy({ id: data.id })
+    if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
+
+    return new Result(Message.SUCCESS, user)
+  }
 }

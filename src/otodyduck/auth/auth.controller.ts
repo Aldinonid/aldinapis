@@ -29,11 +29,16 @@ export class AuthController {
   async refreshToken(@Request() req: OtodyduckUserRequest) {
     return this.authService.refreshToken(req.user)
   }
+
+  @UseGuards(JwtGuard)
+  @Get('user')
+  async getUserDetail(@Request() req: OtodyduckUserRequest) {
+    return this.authService.getUserDetail(req.user)
+  }
   
   @UseGuards(JwtGuard)
   @Post('logout')
   logout(@Request() req: OtodyduckUserRequest) {
     return this.authService.logout(req.user)
   }
-  
 }
