@@ -58,7 +58,7 @@ export class FlowService {
         throw new ConflictException(Message.FLOW_NAME_EXIST)
     })
 
-    flow.updatedAt = new Date()
+    flow.updated_at = new Date()
     Object.assign(flow, {
       ...flowRequest,
       slug: slugify(request.name),

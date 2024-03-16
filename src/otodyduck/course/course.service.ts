@@ -98,7 +98,7 @@ export class CourseService {
 
     const tools = await this.toolRepository.findBy({ id: In(tool_ids) })
 
-    course.updatedAt = new Date()
+    course.updated_at = new Date()
     course.slug = slugify(courseRequest.name)
     course.user = mentor
     course.tools = tools

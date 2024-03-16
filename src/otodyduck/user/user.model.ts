@@ -46,8 +46,8 @@ export class OtodyduckUserData {
   role: string
   job: string
   avatar: string
-  createdAt: string
-  updatedAt: string
+  created_at: string
+  updated_at: string
   refreshToken: string
 }
 

@@ -44,7 +44,7 @@ export class ChapterService {
     const course = await this.courseRepository.findOne({ where: { id: course_id } })
     if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
 
-    chapter.updatedAt = new Date()
+    chapter.updated_at = new Date()
     chapter.course = course
     Object.assign(chapter, chapterRequest)
     const updatedChapter = await this.chapterRepository.save(chapter)

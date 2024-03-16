@@ -37,7 +37,7 @@ export class ToolService {
     const tool = await this.toolRepository.findOne({ where: { id } })
     if (!tool) throw new NotFoundException(Message.TOOL_NOT_FOUND)
 
-    tool.updatedAt = new Date()
+    tool.updated_at = new Date()
     Object.assign(tool, request)
     const updatedTool = await this.toolRepository.save(tool)
     return new Result(Message.SUCCESS, updatedTool)

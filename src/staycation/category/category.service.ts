@@ -49,7 +49,7 @@ export class CategoryService {
     
     const items = await this.itemRepository.findBy({ id: In(item_ids) })
 
-    category.updatedAt = new Date()
+    category.updated_at = new Date()
     Object.assign(category, {
       ...categoryRequest,
       items: items

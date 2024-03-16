@@ -87,7 +87,7 @@ export class ItemService {
 
     if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
-    item.updatedAt = new Date()
+    item.updated_at = new Date()
     Object.assign(item, {
       ...itemRequest,
       category: category,

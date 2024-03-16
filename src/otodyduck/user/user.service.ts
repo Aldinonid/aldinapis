@@ -75,7 +75,7 @@ export class OtodyduckUserService {
     if (isEmailExist) throw new ConflictException(Message.EMAIL_EXIST)
 
     if (request.password) request.password = await bcrypt.hash(request.password, 10)
-    user.updatedAt = new Date()
+    user.updated_at = new Date()
     Object.assign(user, request)
 
     await this.userRepository.save(user)
