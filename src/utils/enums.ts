@@ -11,6 +11,7 @@ export enum Message {
   CHAPTER_NOT_FOUND = 'Chapter not found',
   COURSE_NOT_FOUND = 'Course not found',
   COURSE_NOT_HAVE_PRICE = 'Premium course should have price',
+  REVIEW_NOT_FOUND = 'Review not found',
   TOKEN_EXPIRED = 'Token expired',
   BANK_NOT_FOUND = 'Bank not found',
   CATEGORY_NOT_FOUND = 'Category not found',
@@ -18,6 +19,8 @@ export enum Message {
   ACTIVITY_NOT_FOUND = 'Activity not found',
   ITEM_NOT_FOUND = 'Item not found',
   IMAGE_NOT_FOUND = 'Image not found',
+  FLOW_NAME_EXIST = `Can't use same name in other flows`,
+  COURSE_NAME_EXIST = `Can't use same name in other courses`,
 
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED'

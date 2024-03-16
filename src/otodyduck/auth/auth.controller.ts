@@ -25,7 +25,7 @@ export class AuthController {
   }
 
   @UseGuards(RefreshJwtGuard)
-  @Get('refresh-token')
+  @Get('refresh')
   async refreshToken(@Request() req: OtodyduckUserRequest) {
     return this.authService.refreshToken(req.user)
   }

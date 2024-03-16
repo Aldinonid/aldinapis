@@ -1,3 +1,4 @@
+import { IsEnum, IsNotEmpty, IsNumber, IsString, IsUrl } from "class-validator"
 import { OtodyduckLevel } from "src/utils/enums"
 
 export enum CourseType {
@@ -24,15 +25,39 @@ export type ListCourseQueries = {
 }
 
 export class RequestOtodyduckCourseDTO {
+
+  @IsNotEmpty()
+  @IsString()
   name: string
+
   certificate: boolean
+
+  @IsUrl()
   thumbnail: string
+
+  @IsNotEmpty()
+  @IsEnum(CourseType)
   type: CourseType
+
+  @IsNotEmpty()
+  @IsEnum(CourseStatus)
   status: CourseStatus
+
+  @IsNumber()
   price: number
+
+  @IsNotEmpty()
+  @IsEnum(OtodyduckLevel)
   level: OtodyduckLevel
+
+  @IsString()
   description: string
+
+  @IsEnum(CourseCategory)
   category: CourseCategory
+
+  @IsNumber()
   mentor_id: number
+  
   tool_ids: number[]
 }

@@ -37,8 +37,8 @@ export class OtodyduckUserService {
       .where('otodyduck_users.email = :email', { email: email })
       .addSelect([
         'otodyduck_users.password',
-        'otodyduck_users.refreshToken',
-        'otodyduck_users.accessToken'
+        'otodyduck_users.refresh_token',
+        'otodyduck_users.access_token'
       ])
       .getOne()
     if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)

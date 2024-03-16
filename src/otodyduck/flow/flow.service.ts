@@ -1,10 +1,10 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { OtodyduckFlow } from '../typeorm/entities/Flow.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { Message, Result } from 'src/utils/enums';
 import { RequestOtodyduckFlowDTO } from './flow.model';
-import { slugify } from 'src/utils/commons';
+import { lowerCaseCompare, slugify } from 'src/utils/commons';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
 
 @Injectable()
@@ -14,50 +14,70 @@ export class FlowService {
     @InjectRepository(OtodyduckCourse) private courseRepository: Repository<OtodyduckCourse>,
   ) {}
 
-  getAllFlows() {
-    return new Result(Message.SUCCESS, this.flowRepository.find())
+  async getAllFlows() {
+    return new Result(Message.SUCCESS, await this.flowRepository.find({ relations: ['courses', 'courses.user'] }))
   }
 
-  async getFlow(slug: string) {
-    const isNameExist = await this.flowRepository.findOne({ where: { slug: slug }})
-    if (isNameExist) throw new NotFoundException(Message.FLOW_NOT_FOUND)
-
-    const courses = await this.courseRepository.find({
-      
+  async getFlow(id: number) {
+    const flow = await this.flowRepository.findOne({
+      where: { id: id },
+      relations: ['courses', 'courses.user']
     })
-    return new Result(Message.SUCCESS, {})
+    if (!flow) throw new NotFoundException(Message.FLOW_NOT_FOUND)
+
+    return new Result(Message.SUCCESS, flow)
   }
 
   async createFlow(request: RequestOtodyduckFlowDTO) {
-    const isNameExist = await this.flowRepository.findOne({ where: { name: request.name }})
-    if (
-      isNameExist?.name.toLowerCase() === request.name.toLowerCase()
-    ) throw new ConflictException(Message.NAME_EXIST)
+    const { course_ids, ...flowRequest } = request
+    const isNameExist = await this.flowRepository.findOne({ where: { name: flowRequest.name }})
+    if (isNameExist) throw new ConflictException(Message.NAME_EXIST)
 
-    const newFlow = this.flowRepository.create(request)
-    newFlow.slug = slugify(request.name)
+    const courses = await this.courseRepository.findBy({ id: In(course_ids) })
 
-    const createdFlow = await this.flowRepository.save(newFlow)
+    const newFlow = this.flowRepository.create({
+      ...flowRequest,
+      slug: slugify(flowRequest.name),
+      courses: courses
+    })
     
-    return new Result(Message.SUCCESS, createdFlow)
+    return new Result(Message.SUCCESS, await this.flowRepository.save(newFlow))
   }
 
   async updateFlow(id: number, request: RequestOtodyduckFlowDTO) {
+    const { course_ids, ...flowRequest } = request
+
     const flow = await this.flowRepository.findOne({ where: { id } })
-    if (!flow) return new NotFoundException(Message.FLOW_NOT_FOUND)
+    if (!flow) throw new NotFoundException(Message.FLOW_NOT_FOUND)
 
-    Object.assign(flow, request)
-    flow.slug = slugify(request.name)
+    const courses = await this.courseRepository.find({ where: {id: In(course_ids)}, relations: ['flows'] })
+    const allFlowNames = (await this.flowRepository.find({ where: { id: Not(id) } })).map((flow) => flow.name)
 
-    // TODO: Add relation to course first
+    allFlowNames.forEach((name: string) => {
+      if (lowerCaseCompare(request.name, name)) 
+        throw new ConflictException(Message.FLOW_NAME_EXIST)
+    })
 
+    flow.updatedAt = new Date()
+    Object.assign(flow, {
+      ...flowRequest,
+      slug: slugify(request.name),
+      courses
+    })
+    
+    return new Result(
+      Message.SUCCESS,
+      await this.flowRepository.save(flow)
+    )
   }
 
   async deleteFlow(id: number) {
     const flow = await this.flowRepository.findOne({ where: { id } })
     if (!flow) return new NotFoundException(Message.FLOW_NOT_FOUND)
 
-    await this.flowRepository.delete({ id })
+    const result = await this.flowRepository.delete({ id })
+
+    if(!result.affected) throw new InternalServerErrorException()
 
     return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
   }

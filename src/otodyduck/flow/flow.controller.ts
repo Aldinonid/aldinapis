@@ -11,9 +11,9 @@ export class FlowsController {
     return this.flowService.getAllFlows()
   }
 
-  @Get(':slug')
-  getFlow(@Param('slug') slug: string) {
-    return this.flowService.getFlow(slug)
+  @Get(':id')
+  getFlow(@Param('id') id: number) {
+    return this.flowService.getFlow(id)
   }
 
   @Post()

@@ -1,12 +1,12 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
-import { In, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { CourseType, ListCourseQueries, RequestOtodyduckCourseDTO } from './course.model';
 import { Message, Result } from 'src/utils/enums';
 import { OtodyduckReview } from '../typeorm/entities/Review.entity';
 import { OtodyduckTool } from '../typeorm/entities/Tool.entity';
-import { slugify } from 'src/utils/commons';
+import { lowerCaseCompare, slugify } from 'src/utils/commons';
 import { OtodyduckUser } from '../typeorm/entities/User.entity';
 
 @Injectable()
@@ -43,8 +43,8 @@ export class CourseService {
 
   async getCourse(id: number) {
     const course = await this.courseRepository.findOne({ 
-      where: { id: id }, 
-      relations: { review: true, tools: true, user: true } 
+      where: { id }, 
+      relations: ['review' ,'tools', 'user']
     })
     if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
 
@@ -58,21 +58,24 @@ export class CourseService {
   }
 
   async createCourse(request: RequestOtodyduckCourseDTO) {
-    const isNameExist = await this.courseRepository.findOne({ where: { name: request.name }})
+    const { mentor_id, tool_ids, ...courseRequest } = request
+    const isNameExist = await this.courseRepository.findOne({ where: { name: courseRequest.name }})
     if (isNameExist) throw new ConflictException(Message.NAME_EXIST)
 
-    const mentor = await this.userRepository.findOne({ where: { id: request.mentor_id } })
+    const mentor = await this.userRepository.findOne({ where: { id: mentor_id } })
     if (!mentor) throw new NotFoundException(Message.USER_NOT_FOUND)
 
-    const course = this.courseRepository.create(request)
-    if (request.price === 0 && request.type === CourseType.PREMIUM) 
+    if (courseRequest.price === 0 && courseRequest.type === CourseType.PREMIUM) 
       throw new BadRequestException(Message.COURSE_NOT_HAVE_PRICE)
 
-    const tools = await this.toolRepository.findBy({ id: In(request.tool_ids) })
+    const tools = await this.toolRepository.findBy({ id: In(tool_ids) })
 
-    course.slug = slugify(request.name)
-    course.user = mentor
-    course.tools = tools
+    const course = this.courseRepository.create({ 
+      ...courseRequest,
+      slug: slugify(courseRequest.name),
+      user: mentor,
+      tools: tools
+    })
 
     const createdCourse = await this.courseRepository.save(course)
 
@@ -83,9 +86,15 @@ export class CourseService {
     const { tool_ids, mentor_id, ...courseRequest} = request
     const course = await this.courseRepository.findOne({ where: { id } })
     if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
-    
+
     const mentor = await this.userRepository.findOne({ where: { id: mentor_id } })
     if (!mentor) throw new NotFoundException(Message.USER_NOT_FOUND)
+
+    const allCourseName = (await this.courseRepository.find({ where: { id: Not(id) } })).map((course) => course.name)
+    allCourseName.forEach((name: string) => {
+      if (lowerCaseCompare(courseRequest.name, name)) 
+        throw new ConflictException(Message.COURSE_NAME_EXIST)
+    })
 
     const tools = await this.toolRepository.findBy({ id: In(tool_ids) })
 

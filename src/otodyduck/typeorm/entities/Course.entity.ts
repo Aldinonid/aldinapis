@@ -11,7 +11,7 @@ export class OtodyduckCourse {
   @PrimaryGeneratedColumn()
   id: number;
   
-  @Column()
+  @Column({unique: true})
   @IsNotEmpty()
   name: string
 

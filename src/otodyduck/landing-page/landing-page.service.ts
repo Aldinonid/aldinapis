@@ -13,7 +13,7 @@ export class FrontPageService {
   ) {}
 
   async getData() {
-    const courses = await this.courseRepository.find()
+    const courses = await this.courseRepository.find({ relations: ['user'] })
     const users = await this.userRepository.find()
 
     const result = {
