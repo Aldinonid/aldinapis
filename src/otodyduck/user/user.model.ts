@@ -1,41 +1,61 @@
+import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUrl } from "class-validator"
 import { OtodyduckUserRole } from "../typeorm/entities/User.entity"
 
-export type CreateOtodyduckUserParams = {
-  name: string
-  email: string
-  password: string
-  job?: string
-  avatar?: string
-  role?: OtodyduckUserRole
-}
-
-export type LoginOtodyduckUserParams = {
-  email: string
-  password: string
-}
-
-export type UpdateOtodyduckUserParams = {
-  name: string
-  email: string
-  password?: string
-  role: OtodyduckUserRole
-  job?: string
-  avatar?: string
-}
-
-export class CreateOtodyduckUserDTO {
-  name: string
-  email: string
-  password: string
-  job?: string
-}
-
 export class UpdateOtodyduckUserDTO {
+
+  @IsNotEmpty()
+  @IsString()
   name: string
+
+  @IsNotEmpty()
+  @IsEmail()
   email: string
-  password?: string
+
+  password: string
+
+  @IsString()
+  job: string
+
+  @IsNotEmpty()
+  @IsEnum(OtodyduckUserRole)
   role: OtodyduckUserRole
-  job?: string
+
+  @IsUrl()
+  avatar: string
+}
+
+export class LoginOtodyduckUserDTO {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string
+
+  @IsNotEmpty()
+  @IsString()
+  password: string
+}
+
+export class RequestOtodyduckUserDTO {
+
+  @IsNotEmpty()
+  @IsString()
+  name: string
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string
+
+  @IsNotEmpty()
+  @IsString()
+  password: string
+
+  @IsString()
+  job: string
+
+  @IsNotEmpty()
+  @IsEnum(OtodyduckUserRole)
+  role: OtodyduckUserRole
+
+  @IsUrl()
   avatar?: string
 }
 

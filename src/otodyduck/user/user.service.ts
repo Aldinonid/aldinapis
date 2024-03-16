@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
-import { CreateOtodyduckUserParams, OtodyduckUserData, UpdateOtodyduckUserParams } from './user.model';
+import { OtodyduckUserData, RequestOtodyduckUserDTO, UpdateOtodyduckUserDTO } from './user.model';
 import { OtodyduckUser } from '../typeorm/entities/User.entity';
 import * as bcrypt from 'bcrypt';
 import { Message, Result } from 'src/utils/enums';
@@ -53,7 +53,7 @@ export class OtodyduckUserService {
     return new Result(Message.SUCCESS, user)
   }
 
-  async register(request: CreateOtodyduckUserParams) {
+  async register(request: RequestOtodyduckUserDTO) {
     const newUser = this.userRepository.create(request)
     const isEmailExist = await this.userRepository.findOne({where: { email: request.email }})
     if (isEmailExist) throw new ConflictException(Message.EMAIL_EXIST)
@@ -62,7 +62,7 @@ export class OtodyduckUserService {
     return new Result(Message.SUCCESS, createdUser)
   }
 
-  async updateUser(data: OtodyduckUserData, request: UpdateOtodyduckUserParams) {
+  async updateUser(data: OtodyduckUserData, request: UpdateOtodyduckUserDTO) {
     const user = await this.userRepository.findOneBy({ id: data.id })
     if (!user) throw new NotFoundException(Message.USER_NOT_FOUND)
 

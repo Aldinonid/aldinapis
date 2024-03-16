@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service';
 import { OtodyduckUserService } from '../user/user.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { CreateOtodyduckUserDTO, OtodyduckUserRequest } from '../user/user.model';
+import { OtodyduckUserRequest, RequestOtodyduckUserDTO } from '../user/user.model';
 import { RefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
 import { JwtGuard } from './guards/jwt-auth.guard';
 
@@ -20,7 +20,7 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() request: CreateOtodyduckUserDTO) {
+  async register(@Body() request: RequestOtodyduckUserDTO) {
     return this.userService.register(request)
   }
 
