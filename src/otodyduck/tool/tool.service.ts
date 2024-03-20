@@ -1,0 +1,54 @@
+import { NotFoundException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { OtodyduckTool } from '../typeorm/entities/Tool.entity';
+import { Repository } from 'typeorm';
+import { Message, Result } from 'src/utils/enums';
+import { ListToolQueries, RequestOtodyduckToolDTO } from './tool.model';
+
+@Injectable()
+export class ToolService {
+  constructor(@InjectRepository(OtodyduckTool) private toolRepository: Repository<OtodyduckTool>) {}
+
+  async getAllTools(query: ListToolQueries) {
+    const tools = this.toolRepository.createQueryBuilder('otodyduck_tools')
+      .leftJoinAndSelect('otodyduck_tools.courses', 'otodyduck_courses')
+
+    if (query.course_id) {
+      tools.where('otodyduck_courses.id = :id', {id: query.course_id})
+    }
+
+    return new Result(Message.SUCCESS, await tools.getMany())
+  }
+
+  async getTool(id: number) {
+    const tool = await this.toolRepository.findOne({ where: { id } })
+    if (!tool) throw new NotFoundException(Message.TOOL_NOT_FOUND)
+
+    return new Result(Message.SUCCESS, tool)
+  }
+
+  async createTool(request: RequestOtodyduckToolDTO) {
+    const newTool = this.toolRepository.create(request)
+    const createdTool = await this.toolRepository.save(newTool)
+    return new Result(Message.SUCCESS, createdTool)
+  }
+
+  async updateTool(id: number, request: RequestOtodyduckToolDTO) {
+    const tool = await this.toolRepository.findOne({ where: { id } })
+    if (!tool) throw new NotFoundException(Message.TOOL_NOT_FOUND)
+
+    tool.updated_at = new Date()
+    Object.assign(tool, request)
+    const updatedTool = await this.toolRepository.save(tool)
+    return new Result(Message.SUCCESS, updatedTool)
+  }
+
+  async deleteTool(id: number) {
+    const tool = await this.toolRepository.findOne({ where: { id } })
+    if (!tool) throw new NotFoundException(Message.TOOL_NOT_FOUND)
+
+    await this.toolRepository.delete({ id })
+
+    return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
+  }
+}

@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { StaycationItem } from "./Item.entity";
 
 @Entity({ name: 'staycation_activities' })
@@ -17,9 +17,15 @@ export class StaycationActivity {
 
   @Column({name: 'image_url'})
   @IsNotEmpty()
-  imageUrl: string
+  image_url: string
 
-  @OneToOne(() => StaycationItem)
-  @JoinColumn()
+  @ManyToOne(() => StaycationItem, (item) => item.activities)
+  @JoinColumn({name: 'item_id'})
   item: StaycationItem
+
+  @CreateDateColumn({name: 'created_at'})
+  created_at: Date
+  
+  @UpdateDateColumn({name: 'updated_at'})
+  updated_at: Date
 }

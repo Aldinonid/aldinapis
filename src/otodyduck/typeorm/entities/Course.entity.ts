@@ -1,9 +1,10 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { IsNotEmpty } from "class-validator";
 import { OtodyduckLevel } from "src/utils/enums";
 import { OtodyduckTool } from "./Tool.entity";
 import { OtodyduckUser } from "./User.entity";
 import { OtodyduckReview } from "./Review.entity";
+import { OtodyduckFlow } from "./Flow.entity";
 
 @Entity({ name: 'otodyduck_courses' })
 export class OtodyduckCourse {
@@ -19,7 +20,7 @@ export class OtodyduckCourse {
   slug: string
 
   @Column()
-  certificate: string
+  certificate: boolean
 
   @Column()
   thumbnail: string
@@ -42,19 +43,44 @@ export class OtodyduckCourse {
   @Column()
   category: string
 
-  @ManyToMany(() => OtodyduckTool)
-  @JoinTable()
+  @ManyToMany(() => OtodyduckTool, (tool) => tool.courses)
+  @JoinTable({
+    name: 'otodyduck_courses_tools',
+    joinColumn: {
+      name: 'course_id',
+      referencedColumnName: 'id'
+    },
+    inverseJoinColumn: {
+      name: 'tool_id',
+      referencedColumnName: 'id'
+    }
+  })
   tools: OtodyduckTool[]
 
-  @ManyToOne(() => OtodyduckUser, (user) => user.id)
-  userId: OtodyduckUser
+  @ManyToMany(() => OtodyduckFlow, (flow) => flow.courses)
+  @JoinTable({
+    name: 'otodyduck_courses_flows',
+    joinColumn: {
+      name: 'course_id',
+      referencedColumnName: 'id'
+    },
+    inverseJoinColumn: {
+      name: 'flow_id',
+      referencedColumnName: 'id'
+    }
+  })
+  flows: OtodyduckTool[]
 
-  @OneToOne(() => OtodyduckReview, (review) => review.courseId)
+  @ManyToOne(() => OtodyduckUser, (user) => user.courses)
+  @JoinColumn({name: 'user_id'})
+  user: OtodyduckUser
+
+  @OneToOne(() => OtodyduckReview, (review) => review.course)
   review: OtodyduckReview
 
   @CreateDateColumn({name: 'created_at'})
-  createdAt: Date
+  created_at: Date
   
   @UpdateDateColumn({name: 'updated_at'})
-  updatedAt: Date
+  updated_at: Date
 }

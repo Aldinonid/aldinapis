@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { StaycationImage } from "./Image.entity";
 import { StaycationActivity } from "./Activity.entity";
 import { StaycationFeature } from "./Feature.entity";
@@ -29,24 +29,34 @@ export class StaycationItem {
   @Column()
   country: string
 
-  @Column({name: 'is_popular'})
-  isPopular: boolean
+  @Column({name: 'is_popular', default: false})
+  is_popular: boolean
 
   @Column()
   unit: string
 
-  @Column({name: 'sum_booking'})
-  sumBooking: number
+  @Column({name: 'sum_booking', nullable: true})
+  sum_booking: number
 
-  @OneToOne(() => StaycationCategory)
+  @ManyToOne(() => StaycationCategory, (category) => category.items, { nullable: true })
+  @JoinColumn({name: 'category_id'})
   category: StaycationCategory
 
-  @OneToMany(() => StaycationImage, (image) => image.id)
+  @OneToMany(() => StaycationImage, (image) => image.item)
+  @JoinColumn({name: 'image_ids'})
   images: StaycationImage[]
 
-  @OneToMany(() => StaycationActivity, (activity) => activity.id)
+  @OneToMany(() => StaycationActivity, (activity) => activity.item)
+  @JoinColumn({name: 'activity_ids'})
   activities: StaycationActivity[]
-
-  @OneToMany(() => StaycationFeature, (feature) => feature.id)
+  
+  @OneToMany(() => StaycationFeature, (feature) => feature.item)
+  @JoinColumn({name: 'feature_ids'})
   features: StaycationFeature[]
+
+  @CreateDateColumn({name: 'created_at'})
+  created_at: Date
+  
+  @UpdateDateColumn({name: 'updated_at'})
+  updated_at: Date
 }

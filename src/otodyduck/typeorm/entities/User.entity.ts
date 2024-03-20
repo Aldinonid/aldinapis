@@ -18,7 +18,7 @@ export class OtodyduckUser {
   @IsNotEmpty()
   name: string;
 
-  @Column()
+  @Column({ select: false })
   @IsNotEmpty()
   password: string;
 
@@ -40,14 +40,28 @@ export class OtodyduckUser {
   @Column()
   job: string
 
+  @Column({
+    name: 'refresh_token',
+    nullable: true,
+    select: false
+  })
+  refresh_token: string
+
+  @Column({
+    name: 'access_token',
+    nullable: true,
+    select: false
+  })
+  access_token: string
+
   @OneToMany(() => OtodyduckCourse, (course) => course.id)
-  courseIds: OtodyduckCourse[]
+  courses: OtodyduckCourse[]
 
   @CreateDateColumn({name: 'created_at'})
-  createdAt: Date
+  created_at: Date
   
   @UpdateDateColumn({name: 'updated_at'})
-  updatedAt: Date
+  updated_at: Date
 
   @BeforeInsert()
   async hasPassword() {

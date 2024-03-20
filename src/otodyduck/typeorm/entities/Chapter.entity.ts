@@ -14,14 +14,15 @@ export class OtodyduckChapter {
 
   @OneToOne(() => OtodyduckCourse)
   @JoinColumn({name: 'course_id'})
-  courseId: OtodyduckCourse
+  course: OtodyduckCourse
 
-  @OneToMany(() => OtodyduckLesson, (lesson) => lesson.chapterId)
-  chapterIds: OtodyduckLesson[]
+  @OneToMany(() => OtodyduckLesson, (lesson) => lesson.chapter)
+  @JoinColumn({name: 'lesson_ids'})
+  lessons?: OtodyduckLesson[]
 
   @CreateDateColumn({name: 'created_at'})
-  createdAt: Date
+  created_at: Date
   
   @UpdateDateColumn({name: 'updated_at'})
-  updatedAt: Date
+  updated_at: Date
 }

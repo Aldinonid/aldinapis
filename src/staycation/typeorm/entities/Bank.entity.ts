@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({ name: 'staycation_banks' })
 export class StaycationBank {
@@ -8,13 +8,19 @@ export class StaycationBank {
 
   @Column({name: 'bank_name'})
   @IsNotEmpty()
-  bankName: string
+  bank_name: string
   
   @Column({name: 'account_number'})
   @IsNotEmpty()
-  accountNumber: string
+  account_number: string
 
   @Column()
   @IsNotEmpty()
   name: string
+
+  @CreateDateColumn({name: 'created_at'})
+  created_at: Date
+  
+  @UpdateDateColumn({name: 'updated_at'})
+  updated_at: Date
 }

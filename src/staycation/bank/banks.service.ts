@@ -1,0 +1,55 @@
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { StaycationBank } from '../typeorm/entities/Bank.entity';
+import { Repository } from 'typeorm';
+import { Message, Result } from 'src/utils/enums';
+import { RequestBankDTO } from './banks.model';
+
+@Injectable()
+export class BankService {
+  constructor(@InjectRepository(StaycationBank) private bankRepository: Repository<StaycationBank>) {}
+
+  async getAllBanks() {
+    return new Result(
+      Message.SUCCESS, 
+      await this.bankRepository.find()
+    )
+  }
+
+  async getBank(id: number) {
+    const bank = await this.bankRepository.findOneBy({ id })
+    if (!bank) throw new NotFoundException(Message.BANK_NOT_FOUND)
+
+    return new Result(Message.SUCCESS, bank)
+  }
+
+  async createBank(request: RequestBankDTO) {
+    const newBank = this.bankRepository.create(request)
+    return new Result(Message.SUCCESS, await this.bankRepository.save(newBank))
+  }
+
+  async updateBank(id: number, request: RequestBankDTO) {
+    const bank = await this.bankRepository.findOneBy({ id })
+    if (!bank) throw new NotFoundException(Message.BANK_NOT_FOUND)
+
+    const result = await this.bankRepository.update(bank.id, request)
+
+    if (!result.affected) throw new InternalServerErrorException()
+
+    return new Result(
+      Message.SUCCESS, 
+      await this.bankRepository.findOneBy({ id })
+    )
+  }
+
+  async deleteBank(id: number) {
+    const bank = await this.bankRepository.findOneBy({ id })
+    if (!bank) throw new NotFoundException(Message.BANK_NOT_FOUND)
+
+    const result = await this.bankRepository.delete({ id })
+
+    if(!result.affected) throw new InternalServerErrorException()
+
+    return new Result(Message.SUCCESS, Message.DELETE_SUCCESS)
+  }
+}

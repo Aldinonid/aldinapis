@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { OtodyduckChapter } from "./Chapter.entity";
 
 @Entity({ name: 'otodyduck_lessons' })
@@ -12,14 +12,15 @@ export class OtodyduckLesson {
   name: string
 
   @Column({name: 'video_url'})
-  videoUrl: string
+  video_url: string
 
-  @ManyToOne(() => OtodyduckChapter, (chapter) => chapter.id)
-  chapterId: OtodyduckChapter
+  @ManyToOne(() => OtodyduckChapter, (chapter) => chapter.lessons)
+  @JoinColumn({name: 'chapter_id'})
+  chapter: OtodyduckChapter
 
   @CreateDateColumn({name: 'created_at'})
-  createdAt: Date
+  created_at: Date
   
   @UpdateDateColumn({name: 'updated_at'})
-  updatedAt: Date
+  updated_at: Date
 }

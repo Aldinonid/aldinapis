@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { Message, Result } from 'src/utils/enums';
 
 @Injectable()
 export class KatakanjiService {
 
   getAllArticle() {
-    return [
+    const articles = [
       {
         image: "https://firebasestorage.googleapis.com/v0/b/aldinportfolioapis.appspot.com/o/katakanji%2Ftrophy.png?alt=media&token=c2a3d72a-c7ea-4643-b716-63109be68f80",
         titleJP: "ダルビッシュが沢村賞選考にもの申す「今の時代にあった評価してあげるべき」",
@@ -827,10 +828,11 @@ export class KatakanjiService {
         quizscore: 0
       }
     ]
+    return new Result(Message.SUCCESS, articles)
   }
 
   getAllOnboardingQuestions() {
-    return [
+    const questions = [
       {kanji: "金", questionTitle: "Apakah arti dari kanji berikut ini?", answers: ["Emas", "Perak", "Perunggu", "Batu"], correctAnswer: "Emas"},
       {kanji: "数", questionTitle: "Apakah arti dari kanji berikut ini?", answers: ["Fisika", "Bagian", "Kimia", "Angka"], correctAnswer: "Angka"},
       {kanji: "史", questionTitle: "Apakah arti dari kanji berikut ini?", answers: ["Nyaman", "Sejarah", "Pakai", "Praktis"], correctAnswer: "Sejarah"},
@@ -841,6 +843,7 @@ export class KatakanjiService {
       {kanji: "教", questionTitle: "Apakah arti dari kanji berikut ini?", answers: ["Diajar", "Baru", "Belajar", "Mengajar"], correctAnswer: "Mengajar"},
       {kanji: "強", questionTitle: "Apakah arti dari kanji berikut ini?", answers: ["Lemah", "Semangat", "Kuat", "Latihan"], correctAnswer: "Kuat"},
     ]
+    return new Result(Message.SUCCESS, questions)
   }
 
 }
