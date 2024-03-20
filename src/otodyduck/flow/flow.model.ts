@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString, IsUrl } from "class-validator"
+import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUrl } from "class-validator"
 import { OtodyduckLevel } from "src/utils/enums"
 
 export class RequestOtodyduckFlowDTO {
@@ -14,5 +14,6 @@ export class RequestOtodyduckFlowDTO {
   @IsUrl()
   image: string
 
+  @IsOptional()
   course_ids: number[]
 }

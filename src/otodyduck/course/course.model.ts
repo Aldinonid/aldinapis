@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString, IsUrl } from "class-validator"
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl } from "class-validator"
 import { OtodyduckLevel } from "src/utils/enums"
 
 export enum CourseType {
@@ -59,5 +59,6 @@ export class RequestOtodyduckCourseDTO {
   @IsNumber()
   mentor_id: number
   
+  @IsOptional()
   tool_ids: number[]
 }

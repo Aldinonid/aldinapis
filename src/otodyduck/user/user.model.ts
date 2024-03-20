@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, IsUrl } from "class-validator"
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsUrl } from "class-validator"
 import { OtodyduckUserRole } from "../typeorm/entities/User.entity"
 
 export class UpdateOtodyduckUserDTO {
@@ -13,6 +13,7 @@ export class UpdateOtodyduckUserDTO {
 
   password: string
 
+  @IsOptional()
   @IsString()
   job: string
 
@@ -20,6 +21,7 @@ export class UpdateOtodyduckUserDTO {
   @IsEnum(OtodyduckUserRole)
   role: OtodyduckUserRole
 
+  @IsOptional()
   @IsUrl()
   avatar: string
 }
@@ -55,6 +57,7 @@ export class RequestOtodyduckUserDTO {
   @IsEnum(OtodyduckUserRole)
   role: OtodyduckUserRole
 
+  @IsOptional()
   @IsUrl()
   avatar?: string
 }
