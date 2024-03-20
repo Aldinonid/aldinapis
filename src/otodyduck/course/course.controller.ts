@@ -11,9 +11,9 @@ export class CourseController {
     return this.courseService.getAllCourses(query)
   }
 
-  @Get(':id')
-  getCourse(@Param('id', ParseIntPipe) id: number) {
-    return this.courseService.getCourse(id)
+  @Get(':slug')
+  getCourse(@Param('slug') slug: string) {
+    return this.courseService.getCourse(slug)
   }
 
   @Post()

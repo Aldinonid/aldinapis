@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { OtodyduckCourse } from "./Course.entity";
 import { OtodyduckLesson } from "./Lesson.entity";
 
@@ -12,7 +12,7 @@ export class OtodyduckChapter {
   @IsNotEmpty()
   name: string
 
-  @OneToOne(() => OtodyduckCourse)
+  @ManyToOne(() => OtodyduckCourse)
   @JoinColumn({name: 'course_id'})
   course: OtodyduckCourse
 

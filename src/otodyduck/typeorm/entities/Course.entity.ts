@@ -1,10 +1,11 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { IsNotEmpty } from "class-validator";
 import { OtodyduckLevel } from "src/utils/enums";
 import { OtodyduckTool } from "./Tool.entity";
 import { OtodyduckUser } from "./User.entity";
 import { OtodyduckReview } from "./Review.entity";
 import { OtodyduckFlow } from "./Flow.entity";
+import { OtodyduckChapter } from "./Chapter.entity";
 
 @Entity({ name: 'otodyduck_courses' })
 export class OtodyduckCourse {
@@ -69,14 +70,17 @@ export class OtodyduckCourse {
       referencedColumnName: 'id'
     }
   })
-  flows: OtodyduckTool[]
+  flows: OtodyduckFlow[]
 
   @ManyToOne(() => OtodyduckUser, (user) => user.courses)
   @JoinColumn({name: 'user_id'})
   user: OtodyduckUser
 
-  @OneToOne(() => OtodyduckReview, (review) => review.course)
-  review: OtodyduckReview
+  @OneToMany(() => OtodyduckReview, (review) => review.course)
+  review: OtodyduckReview[]
+
+  @OneToMany(() => OtodyduckChapter, (chapter) => chapter.course)
+  chapters: OtodyduckChapter[]
 
   @CreateDateColumn({name: 'created_at'})
   created_at: Date

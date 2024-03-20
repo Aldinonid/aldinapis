@@ -21,7 +21,7 @@ export type ListCourseQueries = {
   q: string
   status: string
   category: string
-  mentor_id: string
+  mentor_name: string
 }
 
 export class RequestOtodyduckCourseDTO {

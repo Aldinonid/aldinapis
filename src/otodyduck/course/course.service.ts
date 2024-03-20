@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OtodyduckCourse } from '../typeorm/entities/Course.entity';
-import { In, Not, Repository } from 'typeorm';
+import { ILike, In, Like, Not, Repository } from 'typeorm';
 import { CourseType, ListCourseQueries, RequestOtodyduckCourseDTO } from './course.model';
 import { Message, Result } from 'src/utils/enums';
 import { OtodyduckReview } from '../typeorm/entities/Review.entity';
@@ -18,35 +18,37 @@ export class CourseService {
     @InjectRepository(OtodyduckUser) private userRepository: Repository<OtodyduckUser>,
   ) {}
 
-  async getAllCourses(query?: ListCourseQueries) {
+  async getAllCourses(query?: ListCourseQueries) {    
     let courses = this.courseRepository.createQueryBuilder('otodyduck_courses')
-
-    if (query?.q) {
-      courses.where('otodyduck_courses.name LIKE :name', {name: `%${query.q}%`})
-    }
-    if (query?.status) {
-      courses.where('otodyduck_courses.status = :status', {status: query.status})
-    }
-    if (query?.mentor_id) {
-      courses.where('otodyduck_courses.user = :user', {user: query.mentor_id})
-    }
-    if (query?.category) {
-      courses.where('otodyduck_courses.category = :category', {category: query.category})
-    }
-
-    const courseResult = await courses
       .leftJoinAndSelect('otodyduck_courses.user', 'otodyduck_users')
-      .getMany()
 
-    return new Result(Message.SUCCESS, courseResult)
+    if (typeof query?.q === 'string') {
+      courses.andWhere('otodyduck_courses.name ILIKE :name', {name: `%${query.q}%`})
+    }
+    if (typeof query?.status === 'string') {
+      courses.andWhere('otodyduck_courses.status = :status', {status: query.status})
+    }
+    if (typeof query?.mentor_name === 'string') {
+      courses.andWhere('otodyduck_users.name ILIKE :user', {user: `%${query.mentor_name}%`})
+    }
+    if (typeof query?.category === 'string') {
+      courses.andWhere('otodyduck_courses.category = :category', {category: query.category})
+    }
+
+    return new Result(Message.SUCCESS, await courses.getMany())
   }
 
-  async getCourse(id: number) {
+  async getCourse(slug: string) {
     const course = await this.courseRepository.findOne({ 
-      where: { id }, 
-      relations: ['review' ,'tools', 'user']
+      where: { slug: slug }, 
+      relations: ['review' ,'tools', 'user', 'chapters', 'chapters.lessons']
     })
     if (!course) throw new NotFoundException(Message.COURSE_NOT_FOUND)
+
+    Object.assign(course, {
+      ...course,
+      total_students: course.review.length
+    })
 
     return new Result(Message.SUCCESS, course)
   }
