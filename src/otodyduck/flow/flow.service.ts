@@ -15,13 +15,21 @@ export class FlowService {
   ) {}
 
   async getAllFlows() {
-    return new Result(Message.SUCCESS, await this.flowRepository.find({ relations: ['courses', 'courses.user'] }))
+    const flows = await this.flowRepository.find({ relations: ['courses'] })
+    flows.map(flow => {
+      Object.assign(flow, {
+        ...flow,
+        total_courses: flow.courses.length
+      })
+    })
+    
+    return new Result(Message.SUCCESS, flows)
   }
 
-  async getFlow(id: number) {
+  async getFlow(slug: string) {
     const flow = await this.flowRepository.findOne({
-      where: { id: id },
-      relations: ['courses', 'courses.user']
+      where: { slug: slug },
+      relations: ['courses']
     })
     if (!flow) throw new NotFoundException(Message.FLOW_NOT_FOUND)
 
