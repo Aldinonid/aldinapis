@@ -28,14 +28,7 @@ export class ActivityService {
   }
 
   async createActivity(request: RequestActivityDTO) {
-    const { item_id, ...activityRequest } = request
-    const item = await this.itemRepository.findOneBy({ id: item_id })
-    if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
-
-    const newActivity = this.activityRepository.create({
-      ...activityRequest,
-      item: item
-    })
+    const newActivity = this.activityRepository.create(request)
 
     return new Result(
       Message.SUCCESS,
@@ -44,17 +37,10 @@ export class ActivityService {
   }
 
   async updateActivity(id: number, request: RequestActivityDTO) {
-    const { item_id, ...activityRequest } = request
     const activity = await this.activityRepository.findOneBy({ id })
     if (!activity) throw new NotFoundException(Message.ACTIVITY_NOT_FOUND)
     
-    const item = await this.itemRepository.findOneBy({ id: item_id })
-    if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
-
-    const result = await this.activityRepository.update(activity.id, {
-      ...activityRequest,
-      item: item
-    })
+    const result = await this.activityRepository.update(activity.id, request)
 
     if (!result.affected) throw new InternalServerErrorException()
 

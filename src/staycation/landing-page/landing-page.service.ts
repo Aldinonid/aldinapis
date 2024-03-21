@@ -40,26 +40,15 @@ export class LandingPageService {
       }
     }
 
-    const testimonial = [
-      {
-        image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial2.jpg?alt=media&token=972f004d-b877-4e5b-badc-248b62c0a114",
-        name: "Giovaldin Family",
-        rate: 4.55,
-        content:
-          "What a great trip with my family and I should try again next time soon ...",
-        family_name: "Aldin",
-        family_occupation: "iOS Developer",
-      },
-      {
-        image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial1.jpg?alt=media&token=d7483c51-1fe8-45b6-8b91-416be17018b0",
-        name: "Aldicia Family",
-        rate: 4.55,
-        content:
-          "What a great trip with my family and I should try again next time soon ...",
-        family_name: "Felicia",
-        family_occupation: "Product Designer",
-      }
-    ]
+    const testimonial = {
+      image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial2.jpg?alt=media&token=972f004d-b877-4e5b-badc-248b62c0a114",
+      name: "Aldicia Family",
+      rate: 4.55,
+      content:
+        "What a great trip with my family and I should try again next time soon ...",
+      family_name: "Aldin",
+      family_occupation: "iOS Developer",
+    }
 
     const result = {
       hero: {
@@ -78,32 +67,21 @@ export class LandingPageService {
   async getDetail(id: number) {
     const item = await this.itemRepository.findOne({ 
       where: { id }, 
-      relations: ['category', 'features', 'images', 'activities'] 
+      relations: ['category', 'images', 'activities', 'features'] 
     })
     if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 
     const banks = await this.bankRepository.find()
 
-    const testimonial = [
-      {
-        image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial2.jpg?alt=media&token=972f004d-b877-4e5b-badc-248b62c0a114",
-        name: "Giovaldin Family",
-        rate: 4.55,
-        content:
-          "What a great trip with my family and I should try again next time soon ...",
-        family_name: "Aldin",
-        family_occupation: "iOS Developer",
-      },
-      {
-        image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial1.jpg?alt=media&token=d7483c51-1fe8-45b6-8b91-416be17018b0",
-        name: "Aldicia Family",
-        rate: 4.55,
-        content:
-          "What a great trip with my family and I should try again next time soon ...",
-        family_name: "Felicia",
-        family_occupation: "Product Designer",
-      }
-    ]
+    const testimonial = {
+      image_url: "https://firebasestorage.googleapis.com/v0/b/aldinonid7.appspot.com/o/staycation%2Ftestimonial1.jpg?alt=media&token=d7483c51-1fe8-45b6-8b91-416be17018b0",
+      name: "Giovaldin Family",
+      rate: 4.55,
+      content:
+        "What a great trip with my family and I should try again next time soon ...",
+      family_name: "Felicia",
+      family_occupation: "Product Designer",
+    }
     
     const result = { item, banks, testimonial}
     

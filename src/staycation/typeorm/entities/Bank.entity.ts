@@ -14,9 +14,13 @@ export class StaycationBank {
   @IsNotEmpty()
   account_number: string
 
-  @Column()
+  @Column({name: 'image_url'})
   @IsNotEmpty()
-  name: string
+  image_url: string
+  
+  @Column({name: 'account_holder'})
+  @IsNotEmpty()
+  account_holder: string
 
   @CreateDateColumn({name: 'created_at'})
   created_at: Date

@@ -9,8 +9,7 @@ import { StaycationItem } from '../typeorm/entities/Item.entity';
 @Injectable()
 export class FeatureService {
   constructor(
-    @InjectRepository(StaycationFeature) private featureRepository: Repository<StaycationFeature>,
-    @InjectRepository(StaycationItem) private itemRepository: Repository<StaycationItem>,
+    @InjectRepository(StaycationFeature) private featureRepository: Repository<StaycationFeature>
   ) {}
 
   async getAllFeatures() {
@@ -28,14 +27,7 @@ export class FeatureService {
   }
 
   async createFeature(request: RequestFeatureDTO) {
-    const { item_id, ...featureRequest } = request
-    const item = await this.itemRepository.findOneBy({ id: item_id })
-    if(!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
-
-    const newFeature = this.featureRepository.create({
-      ...featureRequest,
-      item: item
-    })
+    const newFeature = this.featureRepository.create(request)
     
     return new Result(
       Message.SUCCESS,
@@ -44,17 +36,10 @@ export class FeatureService {
   }
 
   async updateFeature(id: number, request: RequestFeatureDTO) {
-    const { item_id, ...featureRequest } = request
     const feature = await this.featureRepository.findOneBy({ id })
     if (!feature) throw new NotFoundException(Message.FEATURE_NOT_FOUND)
 
-    const item = await this.itemRepository.findOneBy({ id: item_id })
-    if(!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
-
-    const result = await this.featureRepository.update(feature.id, {
-      ...featureRequest,
-      item: item
-    })
+    const result = await this.featureRepository.update(feature.id, request)
 
     if (!result.affected) throw new InternalServerErrorException()
 

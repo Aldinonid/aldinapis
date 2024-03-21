@@ -10,7 +10,4 @@ export class RequestActivityDTO {
 
   @IsNotEmpty()
   image_url: string
-
-  @IsNumber()
-  item_id: number
 }
