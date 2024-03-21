@@ -4,6 +4,4 @@ export class RequestCategoryDTO {
 
   @IsNotEmpty()
   name: string
-  
-  item_ids: number[]
 }

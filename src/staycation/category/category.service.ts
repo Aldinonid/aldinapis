@@ -28,13 +28,7 @@ export class CategoryService {
   }
 
   async createCategory(request: RequestCategoryDTO) {
-    const { item_ids, ...categoryRequest } = request
-    const items = await this.itemRepository.findBy({ id: In(item_ids) })
-
-    const newCategory = this.categoryRepository.create({
-      ...categoryRequest,
-      items: items
-    })
+    const newCategory = this.categoryRepository.create(request)
 
     return new Result(
       Message.SUCCESS,
@@ -43,21 +37,16 @@ export class CategoryService {
   }
 
   async updateCategory(id: number, request: RequestCategoryDTO) {
-    const { item_ids, ...categoryRequest } = request
     const category = await this.categoryRepository.findOneBy({ id })
     if (!category) throw new NotFoundException(Message.CATEGORY_NOT_FOUND)
     
-    const items = await this.itemRepository.findBy({ id: In(item_ids) })
-
-    category.updated_at = new Date()
-    Object.assign(category, {
-      ...categoryRequest,
-      items: items
-    })
+    const result = await this.categoryRepository.update(id, request)
+    
+    if (!result.affected) throw new InternalServerErrorException()
 
     return new Result(
       Message.SUCCESS,
-      await this.categoryRepository.save(category)
+      await this.categoryRepository.findOneBy({ id })
     )
   }
   

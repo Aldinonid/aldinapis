@@ -12,7 +12,4 @@ export class RequestFeatureDTO {
   @IsNotEmpty()
   @IsUrl()
   image_url: string
-
-  @IsNumber()
-  item_id: number
 }

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString,  } from "class-validator"
+import { IsNotEmpty, IsString, IsUrl,  } from "class-validator"
 
 export class RequestBankDTO {
 
@@ -12,5 +12,9 @@ export class RequestBankDTO {
 
   @IsNotEmpty()
   @IsString()
-  name: string
+  account_holder: string
+
+  @IsNotEmpty()
+  @IsUrl()
+  image_url: string
 }

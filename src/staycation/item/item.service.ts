@@ -35,7 +35,7 @@ export class ItemService {
   async getItem(id: number) {
     const item = await this.itemRepository.findOne({ 
       where: { id }, 
-      relations: ['features', 'categories', 'images']
+      relations: ['features', 'category', 'images']
     })
     if (!item) throw new NotFoundException(Message.ITEM_NOT_FOUND)
 

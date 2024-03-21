@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { StaycationImage } from "./Image.entity";
 import { StaycationActivity } from "./Activity.entity";
 import { StaycationFeature } from "./Feature.entity";
@@ -35,23 +35,53 @@ export class StaycationItem {
   @Column()
   unit: string
 
-  @Column({name: 'sum_booking', nullable: true})
+  @Column({name: 'sum_booking', default: 0})
   sum_booking: number
 
-  @ManyToOne(() => StaycationCategory, (category) => category.items, { nullable: true })
+  @ManyToOne(() => StaycationCategory, (category) => category.id, { nullable: true })
   @JoinColumn({name: 'category_id'})
   category: StaycationCategory
 
-  @OneToMany(() => StaycationImage, (image) => image.item)
-  @JoinColumn({name: 'image_ids'})
+  @ManyToMany(() => StaycationImage, (image) => image.items)
+  @JoinTable({
+    name: 'staycation_items_images',
+    joinColumn: {
+      name: 'item_id',
+      referencedColumnName: 'id'
+    },
+    inverseJoinColumn: {
+      name: 'image_id',
+      referencedColumnName: 'id'
+    }
+  })
   images: StaycationImage[]
 
-  @OneToMany(() => StaycationActivity, (activity) => activity.item)
-  @JoinColumn({name: 'activity_ids'})
+  @ManyToMany(() => StaycationActivity, (activity) => activity.items)
+  @JoinTable({
+    name: 'staycation_items_activities',
+    joinColumn: {
+      name: 'item_id',
+      referencedColumnName: 'id'
+    },
+    inverseJoinColumn: {
+      name: 'activity_id',
+      referencedColumnName: 'id'
+    }
+  })
   activities: StaycationActivity[]
   
-  @OneToMany(() => StaycationFeature, (feature) => feature.item)
-  @JoinColumn({name: 'feature_ids'})
+  @ManyToMany(() => StaycationFeature, (feature) => feature.items)
+  @JoinTable({
+    name: 'staycation_items_features',
+    joinColumn: {
+      name: 'item_id',
+      referencedColumnName: 'id'
+    },
+    inverseJoinColumn: {
+      name: 'feature_id',
+      referencedColumnName: 'id'
+    }
+  })
   features: StaycationFeature[]
 
   @CreateDateColumn({name: 'created_at'})
