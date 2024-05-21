@@ -8,7 +8,7 @@ import { OtodyduckModule } from './otodyduck/otodyduck.module';
 import { RouterModule } from '@nestjs/core';
 import { KatakanjiModule } from './katakanji/katakanji.module';
 import { JwtModule } from '@nestjs/jwt';
-import { WebtoonModule } from './webtoon/webtoon.module';
+import { MangaModule } from './manga/manga.module';
 
 @Module({
   imports: [
@@ -38,7 +38,7 @@ import { WebtoonModule } from './webtoon/webtoon.module';
     StaycationModule,
     OtodyduckModule,
     KatakanjiModule,
-    WebtoonModule
+    MangaModule
   ],
   controllers: [],
   providers: [],

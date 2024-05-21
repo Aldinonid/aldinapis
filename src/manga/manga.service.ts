@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import puppeteer from 'puppeteer';
 
 @Injectable()
-export class WebtoonService {
+export class MangaService {
 
   async allListChapter(title: string) {
     const browser = await puppeteer.launch()
@@ -37,7 +37,7 @@ export class WebtoonService {
 
     try {
       await page.goto(`https://kingofshojo.com/${chapterTitle}`)
-      const images = await page.$$eval('p > img', (els: any) => {
+      const images = await page.$$eval('p > img.alignnone', (els: any) => {
         return els.map((el: any) => el.src)
       })
 
