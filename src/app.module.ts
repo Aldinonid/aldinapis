@@ -5,9 +5,17 @@ import { MhsModule } from './mhs/mhs.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseConfig } from './typeorm/typeorm.config';
 import { config } from './config/configuration';
+import { WinstonModule } from 'nest-winston'
+import * as winston from 'winston'
+import { WebtoonModule } from './webtoon/webtoon.module';
 
 @Module({
   imports: [
+    WinstonModule.forRoot({
+      level: 'debug',
+      format: winston.format.json(),
+      transports: [new winston.transports.Console()]
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useClass: DatabaseConfig
@@ -17,7 +25,7 @@ import { config } from './config/configuration';
       load: [config]
     }),
     MhsModule, 
-    UsersModule
+    UsersModule, WebtoonModule
   ],
   controllers: [],
   providers: [],
