@@ -14,5 +14,6 @@ export const config = () => ({
     migrations: [`dist/**/migration/*.{.ts,.js}`],
     migrationsTableName: `${process.env.PGDATABASE}_migrations`
   },
-  secretKey: `${process.env.SECRET_KEY}`
+  secretKey: `${process.env.SECRET_KEY}`,
+  webScrap: `${process.env.SCRAPPING_WEB}`
 });

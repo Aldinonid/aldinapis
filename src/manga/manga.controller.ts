@@ -6,8 +6,8 @@ export class MangaController {
   constructor(private readonly mangaService: MangaService) {}
   
   @Get(':slug')
-  async getAllListChapter(@Param('slug') slug: string) {
-    return this.mangaService.allListChapter(slug)
+  async getManga(@Param('slug') slug: string) {
+    return this.mangaService.mangaDetails(slug)
   }
 
   @Get('/:slug/:id')
