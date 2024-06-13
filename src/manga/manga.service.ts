@@ -1,4 +1,4 @@
-import { Injectable, ServiceUnavailableException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import puppeteer from 'puppeteer';
 import { config } from 'src/config/configuration';
 import { slugify } from 'src/utils/commons';
@@ -6,6 +6,68 @@ import { Message, Result } from 'src/utils/enums';
 
 @Injectable()
 export class MangaService {
+
+  async getPopularManga() {
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
+
+    try {
+      await page.goto(`${config().webScrap}`, {timeout: 0})
+      const mangas = await page.$$eval('.serieslist > ul > li', (els: any) => els.map((el: HTMLElement) => {
+        const image = el.querySelector('.imgseries > a > img') as HTMLImageElement
+        const rating = (el.querySelector('.leftseries > div > div > div.numscore') as HTMLDivElement)?.innerText
+        let genres: string[] = []
+        el.querySelectorAll('.leftseries > span > a').forEach((val: HTMLAnchorElement) => genres.push(val.innerText))
+        return {
+          title: image.alt,
+          rating: rating,
+          thumbnail: image.src,
+          genres: genres
+        }
+      }))
+
+      return new Result(Message.SUCCESS, mangas)
+    } catch (error) {
+      console.error(`Error while scraping ${error}`)
+      throw new InternalServerErrorException(error)
+    } finally {
+      await browser.close()
+    }
+  }
+
+  async searchManga(query: string) {
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
+
+    try {
+      await page.goto(`${config().webScrap}`, {timeout: 0})
+      await page.type('#s', query)
+      await page.keyboard.press('Enter')
+      await page.waitForNavigation()
+
+      const mangas = await page.$$eval('.bsx', (els: any) => els.map((el: HTMLElement) => {
+        const lastChapter = el.querySelector('.epxs')?.innerHTML.split(' ')[1]
+        const rating = el.querySelector('.numscore')?.innerHTML
+        const image = el.querySelector('div.limit > img') as HTMLImageElement
+        const link = el.querySelector('a') as HTMLAnchorElement
+        return {
+          title: image.alt,
+          lastChapter: lastChapter,
+          rating: rating,
+          thumbnail: image.src,
+          link: link.href
+        }
+      }))
+
+      return new Result(Message.SUCCESS, mangas)
+
+    } catch (error) {
+      console.error(`Error while scraping ${error}`)
+      throw new InternalServerErrorException(error)
+    } finally {
+      await browser.close()
+    }
+  }
 
   async mangaDetails(title: string) {
     const browser = await puppeteer.launch()
@@ -46,7 +108,7 @@ export class MangaService {
       })
     } catch (error) {
       console.error(`Error while scraping ${error}`)
-      throw new ServiceUnavailableException()
+      throw new InternalServerErrorException(error)
     } finally {
       await browser.close()
     }
