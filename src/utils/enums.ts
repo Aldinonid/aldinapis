@@ -21,6 +21,7 @@ export enum Message {
   IMAGE_NOT_FOUND = 'Image not found',
   FLOW_NAME_EXIST = `Can't use same name in other flows`,
   COURSE_NAME_EXIST = `Can't use same name in other courses`,
+  SOMETHING_WENT_WRONG = 'Something Went Wrong!',
 
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED'
