@@ -12,3 +12,4 @@ COPY . .
 
 # Define the entry point for the container
 CMD ["npm", "run", "start:dev"]
+EXPOSE 3000
